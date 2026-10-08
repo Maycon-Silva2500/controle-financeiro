@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AMTech Controle Financeiro</title>
+    <style>
+        /* ESTILO (CSS) - Design responsivo focado na tela de login */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #2c3e50; /* Fundo escuro para contrastar com a caixa de login */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .login-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .form-control {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-control label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-control input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 10px;
+        }
+        button:hover { background: #2980b9; }
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        .btn-secondary:hover { background: #bdc3c7; }
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none; /* Escondido por padrão */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h1>AMTech</h1>
+        <p style="text-align: center; margin-bottom: 20px;">Controle Financeiro</p>
+        
+        <div class="error-message" id="mensagem-erro">Email ou senha incorretos.</div>
+
+        <form id="form-login">
+            <div class="form-control">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" placeholder="seu@email.com" required>
+            </div>
+            <div class="form-control">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="Sua senha secreta" required>
+            </div>
+            
+            <!-- Botão principal de Entrar -->
+            <button type="submit" id="btn-entrar">Entrar</button>
+            
+            <!-- Botão secundário para criar conta caso o usuário seja novo -->
+            <button type="button" class="btn-secondary" id="btn-cadastrar">Criar Conta</button>
+        </form>
+    </div>
+
+    <!-- COMPORTAMENTO (JavaScript) - Usando type="module" para importar o Firebase moderno -->
+    <script type="module">
+        // 1. Importando as ferramentas necessárias direto do servidor do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword 
+        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // 2. SUAS CHAVES DO FIREBASE AQUI
+        // Você pegará isso no Console do Firebase > Configurações do Projeto
+        const firebaseConfig = {
+            apiKey: "AIzaSyB67nN2jRUKktgrDWKrfa4eStLwV9-5WEc",
+  authDomain: "amtech-controle-financeiro.firebaseapp.com",
+  projectId: "amtech-controle-financeiro",
+  storageBucket: "amtech-controle-financeiro.firebasestorage.app",
+  messagingSenderId: "370711281254",
+  appId: "1:370711281254:web:c2db1fe87be145701577a7",
+  measurementId: "G-R927NP336V"
+        };
+
+        // 3. Inicializando o Firebase e a Autenticação
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // 4. Capturando os elementos HTML
+        const formLogin = document.getElementById('form-login');
+        const inputEmail = document.getElementById('email');
+        const inputSenha = document.getElementById('senha');
+        const btnCadastrar = document.getElementById('btn-cadastrar');
+        const mensagemErro = document.getElementById('mensagem-erro');
+
+        // 5. Função para tentar fazer o login
+        formLogin.addEventListener('submit', (e) => {
+            e.preventDefault(); // Impede a página de recarregar
+            const email = inputEmail.value;
+            const senha = inputSenha.value;
+
+            // Usa a função do Firebase para validar email e senha
+            signInWithEmailAndPassword(auth, email, senha)
+                .then((userCredential) => {
+                    // Deu certo! O usuário existe e a senha está correta.
+                    console.log("Logado com sucesso!", userCredential.user);
+                    // Redireciona para o painel principal
+                    window.location.href = "index.html"; 
+                })
+                .catch((error) => {
+                    // Deu errado (senha inválida, usuário não existe, etc.)
+                    console.error("Erro no login:", error.message);
+                    mensagemErro.style.display = 'block';
+                    mensagemErro.innerText = "Erro ao entrar. Verifique seu e-mail e senha.";
+                });
+        });
+
+        // 6. Função para cadastrar um novo usuário
+        btnCadastrar.addEventListener('click', () => {
+            const email = inputEmail.value;
+            const senha = inputSenha.value;
+
+            // O Firebase exige que a senha tenha pelo menos 6 caracteres
+            if(senha.length < 6) {
+                mensagemErro.style.display = 'block';
+                mensagemErro.innerText = "A senha deve ter pelo menos 6 caracteres.";
+                return;
+            }
+
+            // Usa a função do Firebase para criar a conta
+            createUserWithEmailAndPassword(auth, email, senha)
+                .then((userCredential) => {
+                    // Conta criada e usuário já logado automaticamente
+                    alert("Conta criada com sucesso! Bem-vindo ao AMTech.");
+                    window.location.href = "index.html";
+                })
+                .catch((error) => {
+                    mensagemErro.style.display = 'block';
+                    mensagemErro.innerText = "Erro ao criar conta. O e-mail pode já estar em uso.";
+                });
+        });
+    </script>
+</body>
+</html>

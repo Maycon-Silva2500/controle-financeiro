@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Controle Financeiro</title>
+    <style>
+        /* 1. ESTILO (CSS) - Design responsivo e limpo */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px; /* Limita a largura no PC, ocupa 100% no celular */
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+            background: #2c3e50;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .dashboard div {
+            text-align: center;
+        }
+        .dashboard h2 {
+            font-size: 24px;
+            margin-top: 5px;
+        }
+        .positive { color: #2ecc71; }
+        .negative { color: #e74c3c; }
+        
+        .form-control {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .form-control input, .form-control select {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #2980b9; }
+
+        .transactions { margin-top: 25px; }
+        .transaction-list { list-style-type: none; }
+        .transaction-list li {
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-left: 5px solid #ccc;
+            border-radius: 4px;
+        }
+        .transaction-list li.receita { border-left-color: #2ecc71; }
+        .transaction-list li.despesa { border-left-color: #e74c3c; }
+
+        .tips-section {
+            margin-top: 25px;
+            padding: 15px;
+            background: #e8f8f5;
+            border-left: 5px solid #1abc9c;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Controle Financeiro</h1>
+        
+        <!-- 2. ESTRUTURA (HTML) -->
+        <div class="dashboard">
+            <div>
+                <p>Receitas</p>
+                <h2 id="total-receitas" class="positive">R$ 0,00</h2>
+            </div>
+            <div>
+                <p>Saldo Atual</p>
+                <h2 id="saldo-atual">R$ 0,00</h2>
+            </div>
+            <div>
+                <p>Despesas</p>
+                <h2 id="total-despesas" class="negative">R$ 0,00</h2>
+            </div>
+        </div>
+
+        <form id="form-transacao">
+            <div class="form-control">
+                <label for="descricao">Descrição</label>
+                <input type="text" id="descricao" placeholder="Ex: Salário, Conta de Luz..." required>
+            </div>
+            <div class="form-control">
+                <label for="valor">Valor (R$)</label>
+                <input type="number" id="valor" step="0.01" placeholder="Ex: 150.00" required>
+            </div>
+            <div class="form-control">
+                <label for="tipo">Tipo</label>
+                <select id="tipo">
+                    <option value="receita">Receita (Entrada)</option>
+                    <option value="despesa">Despesa (Saída)</option>
+                </select>
+            </div>
+            <button type="submit">Adicionar Transação</button>
+        </form>
+
+        <div class="tips-section" id="area-dicas">
+            <strong>Dica de Investimento:</strong>
+            <p id="texto-dica">Adicione suas transações para receber dicas.</p>
+        </div>
+
+        <div class="transactions">
+            <h3>Histórico do Mês</h3>
+            <ul class="transaction-list" id="lista-transacoes">
+                <!-- As transações aparecerão aqui -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- 3. COMPORTAMENTO (JavaScript) -->
+    <script>
+        // Selecionando os elementos que vamos manipular na tela
+        const form = document.getElementById('form-transacao');
+        const inputDescricao = document.getElementById('descricao');
+        const inputValor = document.getElementById('valor');
+        const selectTipo = document.getElementById('tipo');
+        const listaTransacoes = document.getElementById('lista-transacoes');
+        const displaySaldo = document.getElementById('saldo-atual');
+        const displayReceitas = document.getElementById('total-receitas');
+        const displayDespesas = document.getElementById('total-despesas');
+        const textoDica = document.getElementById('texto-dica');
+
+        // Busca as transações salvas no navegador ou inicia um array vazio
+        let transacoes = JSON.parse(localStorage.getItem('transacoes')) || [];
+
+        // Função para atualizar a tela com os valores calculados
+        function atualizarInterface() {
+            listaTransacoes.innerHTML = '';
+            let totalReceitas = 0;
+            let totalDespesas = 0;
+
+            // Percorre todas as transações para criar a lista e somar os valores
+            transacoes.forEach((transacao, index) => {
+                const li = document.createElement('li');
+                li.classList.add(transacao.tipo);
+                
+                // Formata a exibição na lista
+                li.innerHTML = `
+                    ${transacao.descricao} 
+                    <span>R$ ${transacao.valor.toFixed(2)}</span>
+                `;
+                listaTransacoes.appendChild(li);
+
+                // Faz a soma
+                if (transacao.tipo === 'receita') {
+                    totalReceitas += transacao.valor;
+                } else {
+                    totalDespesas += transacao.valor;
+                }
+            });
+
+            const saldo = totalReceitas - totalDespesas;
+
+            // Atualiza os textos no HTML
+            displayReceitas.innerText = `R$ ${totalReceitas.toFixed(2)}`;
+            displayDespesas.innerText = `R$ ${totalDespesas.toFixed(2)}`;
+            displaySaldo.innerText = `R$ ${saldo.toFixed(2)}`;
+
+            gerarDica(saldo, totalReceitas);
+        }
+
+        // Função inteligente para gerar dicas baseadas na saúde financeira
+        function gerarDica(saldo, receitas) {
+            if (receitas === 0) {
+                textoDica.innerText = "Adicione suas receitas para receber dicas.";
+                return;
+            }
+
+            const proporcaoSobra = saldo / receitas;
+
+            if (saldo < 0) {
+                textoDica.innerText = "Atenção: Você está gastando mais do que ganha. Tente cortar despesas não essenciais (ex: fast food ou assinaturas não usadas) para equilibrar as contas.";
+            } else if (proporcaoSobra > 0 && proporcaoSobra <= 0.1) {
+                textoDica.innerText = "Que bom que sobrou um pouco! Tente guardar esse valor na poupança ou em um CDB de liquidez diária para começar sua reserva de emergência.";
+            } else if (proporcaoSobra > 0.1 && proporcaoSobra <= 0.3) {
+                textoDica.innerText = "Ótimo controle financeiro! Com essa margem, você já pode diversificar. Procure investir no Tesouro Selic ou fundos de renda fixa seguros.";
+            } else if (proporcaoSobra > 0.3) {
+                textoDica.innerText = "Excelente mês! Você tem uma boa folga. Além da renda fixa, considere estudar fundos imobiliários (FIIs) ou ações para buscar maior rentabilidade a longo prazo.";
+            } else {
+                textoDica.innerText = "Suas contas estão empatadas. Tente reduzir pelo menos 5% dos gastos no próximo mês para começar a investir.";
+            }
+        }
+
+        // Evento que escuta quando o formulário é enviado
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Impede a página de recarregar
+
+            // Cria um objeto com os dados da transação
+            const novaTransacao = {
+                descricao: inputDescricao.value,
+                valor: parseFloat(inputValor.value),
+                tipo: selectTipo.value
+            };
+
+            // Adiciona a nova transação à lista
+            transacoes.push(novaTransacao);
+            
+            // Salva no armazenamento local do navegador
+            localStorage.setItem('transacoes', JSON.stringify(transacoes));
+
+            // Limpa o formulário
+            inputDescricao.value = '';
+            inputValor.value = '';
+
+            // Atualiza a tela
+            atualizarInterface();
+        });
+
+        // Chama a função ao carregar a página para mostrar dados salvos anteriormente
+        atualizarInterface();
+    </script>
+</body>
+</html>
