@@ -321,7 +321,7 @@ function escutarFechamentos() {
 }
 
 // ==========================================================
-// CÉREBRO DO AMBOT (MENSAGENS PROGRAMADAS - SEM IA)
+// CÉREBRO DO AMBOT (MENSAGENS PROGRAMADAS COM DICAS REAIS DE INVESTIMENTO)
 // ==========================================================
 function atualizarDicasBot(receitas, despesas, investimentos, saldoLivre) {
     const textoBot = document.getElementById('texto-dica-bot');
@@ -344,8 +344,12 @@ function atualizarDicasBot(receitas, despesas, investimentos, saldoLivre) {
         
         mensagem += `Excelente trabalho! Você está no verde e sobrou <strong>R$ ${saldoLivre.toFixed(2)}</strong> na sua conta.<br><br>
         Sua estratégia com esse dinheiro solto pode ser:<br>
-        <i class="fa-solid fa-money-bill-trend-up" style="color: #10b981;"></i> <strong>Reinvestir (60% = R$ ${proporcaoNegocio.toFixed(2)}):</strong> Compre novos produtos, insira no seu estoque ou jogue esse valor nos seus Investimentos.<br>
-        <i class="fa-solid fa-umbrella-beach" style="color: #8b5cf6;"></i> <strong>Lazer (40% = R$ ${proporcaoLazer.toFixed(2)}):</strong> Pague um jantar bacana, dê um upgrade no seu setup ou compre algo para você. Aproveite os frutos do seu trabalho!`;
+        <i class="fa-solid fa-money-bill-trend-up" style="color: #10b981;"></i> <strong>Crescimento / Investimento (60% = R$ ${proporcaoNegocio.toFixed(2)}):</strong><br>
+        A poupança perde para a inflação. Considere investir em:<br>
+        - <strong>Renda Fixa:</strong> Opções como CDBs atrelados ao CDI, Tesouro Selic, LCIs e LCAs rendem mais que a poupança e são muito seguros.<br>
+        - <strong>Fundos Imobiliários (FIIs):</strong> Para gerar renda passiva (aluguel na conta todo mês), fundos como o KNCR11 (focado em juros) e o TRXF11 (focado em imóveis de varejo) são grandes destaques do mercado imobiliário em 2026.<br><br>
+        <i class="fa-solid fa-umbrella-beach" style="color: #8b5cf6;"></i> <strong>Lazer (40% = R$ ${proporcaoLazer.toFixed(2)}):</strong><br>
+        Pague um jantar bacana, dê um upgrade no seu setup ou compre algo para você. Aproveite os frutos do seu trabalho!`;
     } else {
         mensagem += `Suas contas estão empatadas (Caixa R$ 0,00). O que entrou, saiu. Fique atento no próximo mês para não entrar no vermelho!`;
     }
