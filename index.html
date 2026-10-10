@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Chamada do seu arquivo CSS separado -->
+    <!-- Chamada do ficheiro CSS separado -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,7 +18,7 @@
     <aside class="sidebar">
         <div>
             <div class="sidebar-header">
-                <img src="logo.png" alt="Logo AMTech">
+                <img src="logo.png" alt="Logo AMTech" onerror="this.style.display='none'">
             </div>
             <div class="menu-section">
                 <div class="menu-title">Principal</div>
@@ -99,7 +99,7 @@
                             </tr>
                         </thead>
                         <tbody id="corpo-tabela">
-                            <tr><td colspan="5" style="text-align: center;">Carregando dados...</td></tr>
+                            <tr><td colspan="5" style="text-align: center;">A carregar dados...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -145,7 +145,7 @@
                                 <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> AMBot Analista
                             </h3>
                             <p id="texto-dica-bot" style="color: #4b5563; font-size: 0.95rem; line-height: 1.6;">
-                                Carregando análise...
+                                A carregar análise...
                             </p>
                         </div>
                     </div>
@@ -156,7 +156,7 @@
             <div id="ecra-fechamento" style="display: none;">
                 <div class="card">
                     <div class="card-header"><i class="fa-solid fa-lock"></i> Realizar Fechamento</div>
-                    <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 20px;">Selecione o mês para calcular os totais e salvar o histórico permanente no sistema.</p>
+                    <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 20px;">Selecione o mês para calcular os totais e guardar o histórico permanente no sistema.</p>
                     <div class="form-grid" style="align-items: end;">
                         <div class="form-group">
                             <label for="mes-fechamento">Mês e Ano *</label>
@@ -177,11 +177,11 @@
                                 <th>Total Receitas</th>
                                 <th>Total Despesas</th>
                                 <th>Investimentos</th>
-                                <th>Caixa Livre</th>
+                                <th>Saldo Final</th>
                             </tr>
                         </thead>
                         <tbody id="corpo-tabela-fechamentos">
-                            <tr><td colspan="5" style="text-align: center;">Carregando histórico...</td></tr>
+                            <tr><td colspan="5" style="text-align: center;">A carregar histórico...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -190,7 +190,7 @@
         </div>
     </main>
 
-    <!-- Chamada do seu arquivo JavaScript separado -->
+    <!-- Chamada do ficheiro JavaScript separado -->
     <script type="module" src="app.js"></script>
 </body>
 </html>

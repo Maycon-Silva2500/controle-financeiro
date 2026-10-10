@@ -57,7 +57,7 @@ td { padding: 15px 12px; border-bottom: 1px solid #e5e7eb; font-size: 0.95rem; c
 tr:hover { background-color: #f9fafb; }
 .receita-texto { color: #10b981; font-weight: bold; }
 .despesa-texto { color: #ef4444; font-weight: bold; }
-.investimento-texto { color: #8b5cf6; font-weight: bold; } /* NOVA COR: ROXO P/ INVESTIMENTO */
+.investimento-texto { color: #8b5cf6; font-weight: bold; }
 
 .btn-acao { background: none; border: none; cursor: pointer; padding: 5px 10px; border-radius: 4px; transition: 0.2s; }
 .btn-editar { color: #3b82f6; }

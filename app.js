@@ -19,17 +19,16 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const transacoesRef = collection(db, "transacoes");
-const fechamentosRef = collection(db, "fechamentos");
+const fechamentosRef = collection(db, "fechamentos"); 
 
 let usuarioAtual = null;
 let idEdicaoAtual = null; 
 let graficoInstancia = null;
 let somaReceitas = 0;
 let somaDespesas = 0;
-let somaInvestimentos = 0; // NOVA VARIÁVEL GLOBAL
+let somaInvestimentos = 0; 
 let todasTransacoesGlobais = []; 
 
-// Função segura para inserir a data sem falhas
 function setarDataAtualSegura() {
     const dataInput = document.getElementById('data');
     if (dataInput) {
@@ -41,11 +40,14 @@ function setarDataAtualSegura() {
     }
 }
 
-document.getElementById('data-atual').innerHTML = `<i class="fa-regular fa-calendar"></i> ${new Date().toLocaleDateString('pt-BR')}`;
+const dataAtualSpan = document.getElementById('data-atual');
+if (dataAtualSpan) {
+    dataAtualSpan.innerHTML = `<i class="fa-regular fa-calendar"></i> ${new Date().toLocaleDateString('pt-BR')}`;
+}
 setarDataAtualSegura();
 
 // ==========================================================
-// SISTEMA DE NOTIFICAÇÕES
+// SISTEMA DE NOTIFICAÇÕES (BLINDADO)
 // ==========================================================
 function mostrarNotificacao(mensagem, tipo = 'sucesso') {
     try {
@@ -64,29 +66,48 @@ function mostrarNotificacao(mensagem, tipo = 'sucesso') {
         
         const toast = document.createElement('div');
         toast.className = 'amtech-toast';
-        toast.style.borderLeft = `6px solid ${corDestaque}`;
+        toast.style.cssText = `
+            background-color: #ffffff;
+            min-width: 290px;
+            padding: 16px 20px;
+            border-radius: 6px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(120%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: auto;
+            border-left: 6px solid ${corDestaque};
+            margin-top: 10px;
+        `;
         toast.innerHTML = `<i class="fa-solid ${iconeClass}" style="color: ${corDestaque}; font-size: 24px;"></i><span style="color: #444; font-weight: 500; font-size: 15px;">${mensagem}</span>`;
         
         container.appendChild(toast);
         
         requestAnimationFrame(() => { 
-            requestAnimationFrame(() => { toast.classList.add('show'); }); 
+            requestAnimationFrame(() => { 
+                toast.style.transform = 'translateX(0)';
+                toast.style.opacity = '1';
+            }); 
         });
         
         setTimeout(() => { 
-            toast.classList.remove('show'); 
+            toast.style.transform = 'translateX(120%)';
+            toast.style.opacity = '0';
             setTimeout(() => { toast.remove(); }, 400); 
         }, 3000);
     } catch (err) { alert(mensagem); }
 }
 
 // ==========================================================
-// NAVEGAÇÃO ENTRE TELAS
+// NAVEGAÇÃO ENTRE TELAS E PROTEÇÃO DAS ABAS
 // ==========================================================
 const btnMenuNovo = document.getElementById('menu-novo');
 const btnMenuConsulta = document.getElementById('menu-consulta');
 const btnMenuGraficos = document.getElementById('menu-graficos');
-const btnMenuFechamento = document.getElementById('menu-fechamento');
+const btnMenuFechamento = document.getElementById('menu-fechamento'); 
 
 const ecraNovo = document.getElementById('ecra-novo-lancamento');
 const ecraConsulta = document.getElementById('ecra-consulta');
@@ -95,80 +116,104 @@ const ecraFechamento = document.getElementById('ecra-fechamento');
 
 const tituloPagina = document.getElementById('titulo-pagina');
 const subtituloPagina = document.getElementById('subtitulo-pagina');
+const btnSalvarForm = document.getElementById('btn-salvar-form');
+const btnLimpar = document.getElementById('btn-limpar');
+const btnSair = document.getElementById('btn-sair');
 
 function esconderTodosEcras() {
-    ecraNovo.style.display = 'none';
-    ecraConsulta.style.display = 'none';
-    ecraGraficos.style.display = 'none';
-    ecraFechamento.style.display = 'none';
+    if (ecraNovo) ecraNovo.style.display = 'none';
+    if (ecraConsulta) ecraConsulta.style.display = 'none';
+    if (ecraGraficos) ecraGraficos.style.display = 'none';
+    if (ecraFechamento) ecraFechamento.style.display = 'none';
     
-    btnMenuNovo.classList.remove('active');
-    btnMenuConsulta.classList.remove('active');
-    btnMenuGraficos.classList.remove('active');
-    btnMenuFechamento.classList.remove('active');
+    if (btnMenuNovo) btnMenuNovo.classList.remove('active');
+    if (btnMenuConsulta) btnMenuConsulta.classList.remove('active');
+    if (btnMenuGraficos) btnMenuGraficos.classList.remove('active');
+    if (btnMenuFechamento) btnMenuFechamento.classList.remove('active');
 }
 
-btnMenuNovo.addEventListener('click', () => {
-    esconderTodosEcras(); 
-    ecraNovo.style.display = 'block'; 
-    btnMenuNovo.classList.add('active');
-    document.getElementById('btn-limpar').click(); 
-});
+if (btnMenuNovo) {
+    btnMenuNovo.addEventListener('click', () => {
+        esconderTodosEcras(); 
+        if (ecraNovo) ecraNovo.style.display = 'block'; 
+        btnMenuNovo.classList.add('active');
+        
+        if (btnLimpar) btnLimpar.click(); 
+        else resetarFormulario();
 
-btnMenuConsulta.addEventListener('click', () => {
-    esconderTodosEcras(); 
-    ecraConsulta.style.display = 'block'; 
-    btnMenuConsulta.classList.add('active'); 
-    tituloPagina.innerText = "Consulta / Edição"; 
-    subtituloPagina.innerText = "Filtre, edite e elimine transações";
-});
+        if (tituloPagina) tituloPagina.innerText = "Novo Lançamento"; 
+        if (subtituloPagina) subtituloPagina.innerText = "Registre uma nova transação financeira";
+    });
+}
 
-btnMenuGraficos.addEventListener('click', () => {
-    esconderTodosEcras(); 
-    ecraGraficos.style.display = 'block'; 
-    btnMenuGraficos.classList.add('active'); 
-    tituloPagina.innerText = "Gráficos & Relatórios"; 
-    subtituloPagina.innerText = "Visualize a saúde financeira e receba dicas";
-    
-    const saldoLivre = somaReceitas - somaDespesas - somaInvestimentos;
-    atualizarGraficos(somaReceitas, somaDespesas, somaInvestimentos);
-    atualizarDicasBot(somaReceitas, somaDespesas, somaInvestimentos, saldoLivre);
-});
+if (btnMenuConsulta) {
+    btnMenuConsulta.addEventListener('click', () => {
+        esconderTodosEcras(); 
+        if (ecraConsulta) ecraConsulta.style.display = 'block'; 
+        btnMenuConsulta.classList.add('active'); 
+        if (tituloPagina) tituloPagina.innerText = "Consulta / Edição"; 
+        if (subtituloPagina) subtituloPagina.innerText = "Filtre, edite e elimine transações";
+    });
+}
 
-btnMenuFechamento.addEventListener('click', () => {
-    esconderTodosEcras(); 
-    ecraFechamento.style.display = 'block'; 
-    btnMenuFechamento.classList.add('active'); 
-    tituloPagina.innerText = "Fechamento Mensal"; 
-    subtituloPagina.innerText = "Gere e guarde o histórico do seu caixa";
-});
+if (btnMenuGraficos) {
+    btnMenuGraficos.addEventListener('click', () => {
+        esconderTodosEcras(); 
+        if (ecraGraficos) ecraGraficos.style.display = 'block'; 
+        btnMenuGraficos.classList.add('active'); 
+        if (tituloPagina) tituloPagina.innerText = "Gráficos & Relatórios"; 
+        if (subtituloPagina) subtituloPagina.innerText = "Visualize a saúde financeira e receba dicas";
+        
+        if (typeof atualizarGraficos === 'function') {
+            atualizarGraficos(somaReceitas, somaDespesas, somaInvestimentos);
+        }
+        if (typeof atualizarDicasBot === 'function') {
+            const saldoLivre = somaReceitas - somaDespesas - (somaInvestimentos || 0);
+            atualizarDicasBot(somaReceitas, somaDespesas, somaInvestimentos, saldoLivre);
+        }
+    });
+}
+
+if (btnMenuFechamento) {
+    btnMenuFechamento.addEventListener('click', () => {
+        esconderTodosEcras(); 
+        if (ecraFechamento) ecraFechamento.style.display = 'block'; 
+        btnMenuFechamento.classList.add('active'); 
+        if (tituloPagina) tituloPagina.innerText = "Fechamento Mensal"; 
+        if (subtituloPagina) subtituloPagina.innerText = "Gere e guarde o histórico do seu caixa";
+    });
+}
 
 // ==========================================================
-// CONEXÃO COM BANCO DE DADOS FIREBASE
+// CONEXÃO COM BANCO DE DADOS FIREBASE 
 // ==========================================================
 onAuthStateChanged(auth, (user) => {
     if (user) {
         usuarioAtual = user;
         escutarBancoDeDados();
-        escutarFechamentos(); 
+        if (typeof escutarFechamentos === 'function') escutarFechamentos(); 
     } else {
         window.location.href = "login.html";
     }
 });
 
 function escutarBancoDeDados() {
+    if (!usuarioAtual) return;
+
     const q = query(transacoesRef, where("userId", "==", usuarioAtual.uid));
+    
     onSnapshot(q, (snapshot) => {
         const corpoTabela = document.getElementById('corpo-tabela');
+        if (!corpoTabela) return;
+
         corpoTabela.innerHTML = '';
-        
         somaReceitas = 0;
         somaDespesas = 0;
         somaInvestimentos = 0;
         todasTransacoesGlobais = []; 
 
         if(snapshot.empty) {
-            corpoTabela.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhuma transação registrada ainda.</td></tr>';
+            corpoTabela.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhuma transação registada ainda.</td></tr>';
         }
 
         snapshot.forEach((documento) => {
@@ -184,7 +229,6 @@ function escutarBancoDeDados() {
             let corTexto = '';
             let tipoFormatado = '';
             
-            // Lógica de Cores e Soma para os 3 tipos
             if(transacao.tipo === 'receita') {
                 corTexto = 'receita-texto';
                 tipoFormatado = 'Receita';
@@ -213,19 +257,28 @@ function escutarBancoDeDados() {
             corpoTabela.appendChild(tr);
         });
 
-        // Atualizando os Cards Visuais
-        document.getElementById('resumo-receitas').innerText = `R$ ${somaReceitas.toFixed(2)}`;
-        document.getElementById('resumo-despesas').innerText = `R$ ${somaDespesas.toFixed(2)}`;
-        document.getElementById('resumo-investimentos').innerText = `R$ ${somaInvestimentos.toFixed(2)}`;
+        const elReceitas = document.getElementById('resumo-receitas');
+        const elDespesas = document.getElementById('resumo-despesas');
+        const elInvestimentos = document.getElementById('resumo-investimentos');
+        const elSaldo = document.getElementById('resumo-saldo');
+
+        if (elReceitas) elReceitas.innerText = `R$ ${somaReceitas.toFixed(2)}`;
+        if (elDespesas) elDespesas.innerText = `R$ ${somaDespesas.toFixed(2)}`;
+        if (elInvestimentos) elInvestimentos.innerText = `R$ ${somaInvestimentos.toFixed(2)}`;
         
-        // Caixa Livre = Tudo que entrou - O que gastou - O que separou pra investir
         const saldoLivre = somaReceitas - somaDespesas - somaInvestimentos;
-        document.getElementById('resumo-saldo').innerText = `R$ ${saldoLivre.toFixed(2)}`;
-        document.getElementById('resumo-saldo').style.color = saldoLivre >= 0 ? '#3b82f6' : '#ef4444';
+        if (elSaldo) {
+            elSaldo.innerText = `R$ ${saldoLivre.toFixed(2)}`;
+            elSaldo.style.color = saldoLivre >= 0 ? '#3b82f6' : '#ef4444';
+        }
         
-        if(ecraGraficos.style.display === 'block') {
-            atualizarGraficos(somaReceitas, somaDespesas, somaInvestimentos);
-            atualizarDicasBot(somaReceitas, somaDespesas, somaInvestimentos, saldoLivre);
+        if(ecraGraficos && ecraGraficos.style.display === 'block') {
+             if (typeof atualizarGraficos === 'function') {
+                atualizarGraficos(somaReceitas, somaDespesas, somaInvestimentos);
+            }
+            if (typeof atualizarDicasBot === 'function') {
+                atualizarDicasBot(somaReceitas, somaDespesas, somaInvestimentos, saldoLivre);
+            }
         }
     });
 }
@@ -234,10 +287,12 @@ function escutarFechamentos() {
     const q = query(fechamentosRef, where("userId", "==", usuarioAtual.uid));
     onSnapshot(q, (snapshot) => {
         const corpoTabelaFechamentos = document.getElementById('corpo-tabela-fechamentos');
+        if(!corpoTabelaFechamentos) return;
+
         corpoTabelaFechamentos.innerHTML = '';
         
         if(snapshot.empty) {
-            corpoTabelaFechamentos.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum fechamento registrado ainda.</td></tr>';
+            corpoTabelaFechamentos.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum fechamento registado ainda.</td></tr>';
             return;
         }
 
@@ -249,7 +304,6 @@ function escutarFechamentos() {
             const partes = fechamento.mesReferencia.split('-');
             const mesAnoExibicao = `${partes[1]}/${partes[0]}`; 
             
-            // Caso seja um fechamento antigo sem investimento
             const valorInvestido = fechamento.totalInvestimentos || 0; 
             const corSaldo = fechamento.saldoFinal >= 0 ? 'receita-texto' : 'despesa-texto';
             
@@ -267,78 +321,72 @@ function escutarFechamentos() {
 }
 
 // ==========================================================
-// CÉREBRO DO AMBOT (AGORA COM GOOGLE GEMINI IA - GRATUITO)
+// CÉREBRO DO AMBOT (MENSAGENS PROGRAMADAS - SEM IA)
 // ==========================================================
-
-// ⚠️ ATENÇÃO: Cole sua chave do Google AI Studio aqui dentro das aspas:
-const GEMINI_API_KEY = "AQ.Ab8RN6KmMmWsfNd0CaAAVX8O6FrpAkSMe1t3w1NIc8917Z28Nw"; 
-
-async function atualizarDicasBot(receitas, despesas, investimentos, saldoLivre) {
+function atualizarDicasBot(receitas, despesas, investimentos, saldoLivre) {
     const textoBot = document.getElementById('texto-dica-bot');
-    
-    // Se não tiver dados, mostra a mensagem padrão e não gasta a API
-    if (receitas === 0 && despesas === 0 && investimentos === 0) {
-        textoBot.innerHTML = `Olá! Parece que ainda não temos lançamentos para analisar. Registre suas vendas e gastos para eu poder ligar minha Inteligência Artificial e te dar dicas de ouro!`; 
+    if (!textoBot) return;
+
+    if (receitas === 0 && despesas === 0 && (investimentos || 0) === 0) {
+        textoBot.innerHTML = `Olá! Parece que ainda não temos lançamentos para analisar. Registre suas vendas e gastos para eu poder te dar dicas de ouro!`; 
         return;
     }
 
-    // Mostra que a IA está pensando...
-    textoBot.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color: #3b82f6;"></i> O AMBot está analisando seu caixa com Inteligência Artificial. Aguarde um instante...`;
+    let mensagem = "";
 
-    // 1. Montamos a "ordem" que vamos dar para a Inteligência Artificial
-    const promptParaIA = `
-    Você é o AMBot, um conselheiro financeiro extremamente inteligente, direto ao ponto e encorajador. 
-    Analise o fechamento financeiro deste mês do seu cliente. Não use formatação em markdown (asteriscos, hashtags), escreva em texto simples, mas você pode usar tags HTML básicas como <strong> e <br> para organizar as ideias. Seja conciso, dê uma resposta de no máximo 2 ou 3 parágrafos curtos.
-
-    DADOS DO MÊS:
-    - Receitas totais: R$ ${receitas.toFixed(2)}
-    - Despesas totais: R$ ${despesas.toFixed(2)}
-    - Total Investido: R$ ${investimentos.toFixed(2)}
-    - Saldo Livre (O que sobrou no caixa): R$ ${saldoLivre.toFixed(2)}
-
-    Com base nesses números exatos, faça uma análise da saúde financeira atual e dê uma dica prática e acionável do que ele deve fazer agora com esse saldo livre ou como melhorar a situação se estiver no vermelho.
-    `;
-
-    try {
-        // 2. Fazemos a chamada para a API Gratuita do Gemini 1.5 Flash
-        const resposta = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptParaIA }] }]
-            })
-        });
-
-        // 3. Lemos a resposta que a IA mandou de volta
-        const dadosIA = await resposta.json();
+    // Analisa a situação do caixa livre
+    if (saldoLivre < 0) {
+        mensagem += `Ops! Analisando seus números, vejo que seu caixa livre está negativo em <strong>R$ ${Math.abs(saldoLivre).toFixed(2)}</strong>.<br><br>
+        <strong>Minha dica:</strong> Este é o momento de segurar as pontas. Revise o histórico, veja de onde o dinheiro está saindo e evite novos gastos desnecessários. Foco total em aumentar suas vendas e virar o jogo!`;
+    } else if (saldoLivre > 0) {
+        const proporcaoNegocio = saldoLivre * 0.60;
+        const proporcaoLazer = saldoLivre * 0.40;
         
-        if (dadosIA.error) {
-            throw new Error(dadosIA.error.message);
-        }
-
-        const conselhoDaIA = dadosIA.candidates[0].content.parts[0].text;
-        
-        // 4. Mostramos a resposta mágica na tela!
-        textoBot.innerHTML = conselhoDaIA.replace(/\n/g, '<br>'); // Troca quebras de linha normais por quebras do HTML
-
-    } catch (erro) {
-        console.error("Erro na IA do Gemini:", erro);
-        // Fallback: Se a internet cair ou a API falhar, ele mostra o texto padrão para não deixar a tela vazia
-        textoBot.innerHTML = `Ops! Minha conexão neural falhou um instante. Mas a matemática não mente: seu saldo livre é de <strong>R$ ${saldoLivre.toFixed(2)}</strong>. Cuide bem desse valor!`;
+        mensagem += `Excelente trabalho! Você está no verde e sobrou <strong>R$ ${saldoLivre.toFixed(2)}</strong> na sua conta.<br><br>
+        Sua estratégia com esse dinheiro solto pode ser:<br>
+        <i class="fa-solid fa-money-bill-trend-up" style="color: #10b981;"></i> <strong>Reinvestir (60% = R$ ${proporcaoNegocio.toFixed(2)}):</strong> Compre novos produtos, insira no seu estoque ou jogue esse valor nos seus Investimentos.<br>
+        <i class="fa-solid fa-umbrella-beach" style="color: #8b5cf6;"></i> <strong>Lazer (40% = R$ ${proporcaoLazer.toFixed(2)}):</strong> Pague um jantar bacana, dê um upgrade no seu setup ou compre algo para você. Aproveite os frutos do seu trabalho!`;
+    } else {
+        mensagem += `Suas contas estão empatadas (Caixa R$ 0,00). O que entrou, saiu. Fique atento no próximo mês para não entrar no vermelho!`;
     }
+
+    // O Robô dá parabéns se você já investiu
+    if (investimentos > 0) {
+        mensagem += `<div style="background: rgba(139, 92, 246, 0.1); padding: 10px; border-radius: 8px; border-left: 4px solid #8b5cf6; margin-top: 15px;">
+            <i class="fa-solid fa-star" style="color: #8b5cf6;"></i> <strong>Visão de Futuro!</strong> Você já guardou/investiu <strong>R$ ${investimentos.toFixed(2)}</strong> este mês. Isso é inteligência financeira pura! Continue criando esse hábito.
+        </div>`;
+    } else if (saldoLivre > 0) {
+        mensagem += `<div style="background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; border-left: 4px solid #ef4444; margin-top: 15px;">
+            <i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> <strong>Atenção:</strong> Notei que você não fez nenhum "Investimento" ainda. Pegue uma parte desse caixa livre e comece a investir para o seu dinheiro trabalhar para você!
+        </div>`;
+    }
+
+    textoBot.innerHTML = mensagem;
 }
 
+// ==========================================================
+// GRÁFICOS (Chart.js)
+// ==========================================================
 function atualizarGraficos(receitas, despesas, investimentos) {
     const canvas = document.getElementById('meuGraficoCircular');
-    if (canvas.offsetParent === null) return;
+    if (!canvas || canvas.offsetParent === null) return;
+    
+    if (typeof Chart === 'undefined') {
+        console.warn("Chart.js não carregado.");
+        return;
+    }
+
     const contexto = canvas.getContext('2d');
     if(graficoInstancia) graficoInstancia.destroy();
+    
+    const valInvestimentos = investimentos || 0;
+
     graficoInstancia = new Chart(contexto, {
         type: 'pie',
         data: {
             labels: ['Receitas', 'Despesas', 'Investimentos'],
             datasets: [{ 
-                data: [receitas, despesas, investimentos], 
+                data: [receitas, despesas, valInvestimentos], 
                 backgroundColor: ['#10b981', '#ef4444', '#8b5cf6'], 
                 borderWidth: 2, 
                 borderColor: '#ffffff' 
@@ -352,143 +400,168 @@ function atualizarGraficos(receitas, despesas, investimentos) {
 // ROTINAS DE INSERÇÃO, EDIÇÃO E FECHAMENTO
 // ==========================================================
 const formTransacao = document.getElementById('form-transacao');
-const btnSalvarForm = document.getElementById('btn-salvar-form');
+const btnFazerFechamento = document.getElementById('btn-fazer-fechamento');
 
-// 1. Fechar Mês (Agora com Investimentos)
-document.getElementById('btn-fazer-fechamento').addEventListener('click', async () => {
-    const mesInput = document.getElementById('mes-fechamento').value; 
-    if (!mesInput) { mostrarNotificacao("Selecione um mês para fechar.", "erro"); return; }
+if (btnFazerFechamento) {
+    btnFazerFechamento.addEventListener('click', async () => {
+        const mesInput = document.getElementById('mes-fechamento').value; 
+        if (!mesInput) { mostrarNotificacao("Selecione um mês para fechar.", "erro"); return; }
 
-    const transacoesDoMes = todasTransacoesGlobais.filter(t => t.data.startsWith(mesInput));
-    if (transacoesDoMes.length === 0) { mostrarNotificacao("Nenhum lançamento encontrado neste mês.", "info"); return; }
+        const transacoesDoMes = todasTransacoesGlobais.filter(t => t.data.startsWith(mesInput));
+        if (transacoesDoMes.length === 0) { mostrarNotificacao("Nenhum lançamento encontrado neste mês.", "info"); return; }
 
-    let calcReceitas = 0; let calcDespesas = 0; let calcInvestimentos = 0;
-    
-    transacoesDoMes.forEach(t => {
-        if(t.tipo === 'receita') calcReceitas += parseFloat(t.valor);
-        else if(t.tipo === 'despesa') calcDespesas += parseFloat(t.valor);
-        else if(t.tipo === 'investimento') calcInvestimentos += parseFloat(t.valor);
-    });
-    
-    const calcSaldo = calcReceitas - calcDespesas - calcInvestimentos;
-    
-    const botaoFechar = document.getElementById('btn-fazer-fechamento');
-    botaoFechar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
-    botaoFechar.disabled = true;
-
-    try {
-        await addDoc(fechamentosRef, {
-            userId: usuarioAtual.uid, 
-            mesReferencia: mesInput, 
-            totalReceitas: calcReceitas, 
-            totalDespesas: calcDespesas,
-            totalInvestimentos: calcInvestimentos,
-            saldoFinal: calcSaldo, 
-            dataRegistro: new Date().toISOString()
+        let calcReceitas = 0; let calcDespesas = 0; let calcInvestimentos = 0;
+        
+        transacoesDoMes.forEach(t => {
+            if(t.tipo === 'receita') calcReceitas += parseFloat(t.valor);
+            else if(t.tipo === 'despesa') calcDespesas += parseFloat(t.valor);
+            else if(t.tipo === 'investimento') calcInvestimentos += parseFloat(t.valor);
         });
-        mostrarNotificacao("Fechamento salvo com sucesso!", "sucesso");
-        document.getElementById('mes-fechamento').value = ''; 
-    } catch (error) { 
-        mostrarNotificacao("Erro Firebase: " + error.message, "erro");
-    } finally { 
-        botaoFechar.innerHTML = '<i class="fa-solid fa-box-archive"></i> Gravar Fechamento'; 
-        botaoFechar.disabled = false; 
-    }
-});
+        
+        const calcSaldo = calcReceitas - calcDespesas - calcInvestimentos;
+        
+        btnFazerFechamento.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
+        btnFazerFechamento.disabled = true;
 
-// 2. Enviar Formulário
-formTransacao.addEventListener('submit', async function(e) {
-    e.preventDefault(); 
-    
-    if (btnSalvarForm.disabled) return;
-    
-    btnSalvarForm.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
-    btnSalvarForm.disabled = true;
-
-    const dataInput = document.getElementById('data').value;
-    const valorInput = parseFloat(document.getElementById('valor').value);
-    const descricaoInput = document.getElementById('descricao').value;
-    const tipoInput = document.getElementById('tipo').value;
-
-    try {
-        if (idEdicaoAtual) {
-            await updateDoc(doc(db, "transacoes", idEdicaoAtual), { 
-                data: dataInput, valor: valorInput, descricao: descricaoInput, tipo: tipoInput 
+        try {
+            await addDoc(fechamentosRef, {
+                userId: usuarioAtual.uid, 
+                mesReferencia: mesInput, 
+                totalReceitas: calcReceitas, 
+                totalDespesas: calcDespesas,
+                totalInvestimentos: calcInvestimentos,
+                saldoFinal: calcSaldo, 
+                dataRegistro: new Date().toISOString()
             });
-            mostrarNotificacao("Lançamento atualizado com sucesso!", "sucesso");
-        } else {
-            await addDoc(transacoesRef, { 
-                data: dataInput, valor: valorInput, descricao: descricaoInput, tipo: tipoInput, userId: usuarioAtual.uid 
-            });
-            mostrarNotificacao("Novo lançamento guardado com sucesso!", "sucesso");
+            mostrarNotificacao("Fechamento salvo com sucesso!", "sucesso");
+            document.getElementById('mes-fechamento').value = ''; 
+        } catch (error) { 
+            mostrarNotificacao("Erro Firebase: " + error.message, "erro");
+        } finally { 
+            btnFazerFechamento.innerHTML = '<i class="fa-solid fa-box-archive"></i> Gravar Fechamento'; 
+            btnFazerFechamento.disabled = false; 
+        }
+    });
+}
+
+if (formTransacao) {
+    formTransacao.addEventListener('submit', async function(e) {
+        e.preventDefault(); 
+        
+        if (!usuarioAtual) {
+            mostrarNotificacao("Precisa de estar logado para salvar.", "erro");
+            return;
+        }
+
+        if (btnSalvarForm && btnSalvarForm.disabled) return;
+        
+        if (btnSalvarForm) {
+            btnSalvarForm.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+            btnSalvarForm.disabled = true;
+        }
+
+        const dataInput = document.getElementById('data').value;
+        const valorInput = parseFloat(document.getElementById('valor').value);
+        const descricaoInput = document.getElementById('descricao').value;
+        const tipoInput = document.getElementById('tipo').value;
+
+        try {
+            if (idEdicaoAtual) {
+                await updateDoc(doc(db, "transacoes", idEdicaoAtual), { 
+                    data: dataInput, valor: valorInput, descricao: descricaoInput, tipo: tipoInput 
+                });
+                mostrarNotificacao("Lançamento atualizado com sucesso!", "sucesso");
+            } else {
+                await addDoc(transacoesRef, { 
+                    data: dataInput, valor: valorInput, descricao: descricaoInput, tipo: tipoInput, userId: usuarioAtual.uid 
+                });
+                mostrarNotificacao("Novo lançamento guardado com sucesso!", "sucesso");
+            }
+            
+            formTransacao.reset();
+            setarDataAtualSegura(); 
+            idEdicaoAtual = null;
+            if (tituloPagina) tituloPagina.innerText = "Novo Lançamento";
+            if (subtituloPagina) subtituloPagina.innerText = "Registre uma nova transação financeira";
+
+        } catch (error) { 
+            console.error("ERRO FIREBASE DETECTADO:", error);
+            mostrarNotificacao("Atenção! Erro ao guardar: " + error.message, "erro");
+        } finally {
+            if (btnSalvarForm) {
+                btnSalvarForm.disabled = false;
+                btnSalvarForm.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Lançamento';
+            }
+        }
+    });
+}
+
+// Botões de Ação na Tabela (Editar / Excluir)
+const corpoTabelaAction = document.getElementById('corpo-tabela');
+if (corpoTabelaAction) {
+    corpoTabelaAction.addEventListener('click', async (evento) => {
+        if (evento.target.closest('.btn-eliminar')) {
+            const botao = evento.target.closest('.btn-eliminar');
+            const idTransacao = botao.getAttribute('data-id');
+            if(confirm("Tem certeza que deseja excluir esta transação?")) {
+                try { 
+                    await deleteDoc(doc(db, "transacoes", idTransacao)); 
+                    mostrarNotificacao("Lançamento apagado.", "info");
+                } catch (erro) { 
+                    mostrarNotificacao("Erro ao apagar: " + erro.message, "erro");
+                }
+            }
         }
         
-        formTransacao.reset();
-        setarDataAtualSegura(); 
-        idEdicaoAtual = null;
-        tituloPagina.innerText = "Novo Lançamento";
-        subtituloPagina.innerText = "Registre uma nova transação financeira";
+        if (evento.target.closest('.btn-editar')) {
+            const botao = evento.target.closest('.btn-editar');
+            const idTransacao = botao.getAttribute('data-id');
+            try {
+                const docSnap = await getDoc(doc(db, "transacoes", idTransacao));
+                if (docSnap.exists()) {
+                    const dados = docSnap.data();
+                    
+                    const elData = document.getElementById('data');
+                    const elValor = document.getElementById('valor');
+                    const elDescricao = document.getElementById('descricao');
+                    const elTipo = document.getElementById('tipo');
 
-    } catch (error) { 
-        console.error("ERRO FIREBASE DETECTADO:", error);
-        mostrarNotificacao("Atenção! Erro: " + error.message, "erro");
-    } finally {
+                    if (elData) elData.value = dados.data || "";
+                    if (elValor) elValor.value = dados.valor || "";
+                    if (elDescricao) elDescricao.value = dados.descricao || "";
+                    if (elTipo) elTipo.value = dados.tipo || "";
+                    
+                    idEdicaoAtual = idTransacao;
+                    
+                    esconderTodosEcras();
+                    if (ecraNovo) ecraNovo.style.display = 'block';
+                    if (btnMenuNovo) btnMenuNovo.classList.add('active');
+                    if (tituloPagina) tituloPagina.innerText = "Editar Lançamento";
+                    if (subtituloPagina) subtituloPagina.innerText = "Atualize os dados da sua transação";
+                    if (btnSalvarForm) btnSalvarForm.innerHTML = '<i class="fa-solid fa-pen"></i> Atualizar Transação';
+                    
+                    mostrarNotificacao("Pronto para editar.", "info");
+                }
+            } catch (erro) { console.error(erro); }
+        }
+    });
+}
+
+function resetarFormulario() {
+    if (formTransacao) formTransacao.reset();
+    setarDataAtualSegura(); 
+    idEdicaoAtual = null;
+    if (tituloPagina) tituloPagina.innerText = "Novo Lançamento";
+    if (subtituloPagina) subtituloPagina.innerText = "Registre uma nova transação financeira";
+    if (btnSalvarForm) {
         btnSalvarForm.disabled = false;
         btnSalvarForm.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Lançamento';
     }
-});
+}
 
-// 3. Botões de Ação na Tabela (Editar / Excluir)
-document.getElementById('corpo-tabela').addEventListener('click', async (evento) => {
-    if (evento.target.closest('.btn-eliminar')) {
-        const botao = evento.target.closest('.btn-eliminar');
-        const idTransacao = botao.getAttribute('data-id');
-        if(confirm("Tem certeza que deseja excluir esta transação?")) {
-            try { 
-                await deleteDoc(doc(db, "transacoes", idTransacao)); 
-                mostrarNotificacao("Lançamento apagado.", "info");
-            } catch (erro) { 
-                mostrarNotificacao("Erro ao apagar: " + erro.message, "erro");
-            }
-        }
-    }
-    
-    if (evento.target.closest('.btn-editar')) {
-        const botao = evento.target.closest('.btn-editar');
-        const idTransacao = botao.getAttribute('data-id');
-        try {
-            const docSnap = await getDoc(doc(db, "transacoes", idTransacao));
-            if (docSnap.exists()) {
-                const dados = docSnap.data();
-                document.getElementById('data').value = dados.data || "";
-                document.getElementById('valor').value = dados.valor || "";
-                document.getElementById('descricao').value = dados.descricao || "";
-                document.getElementById('tipo').value = dados.tipo || "";
-                idEdicaoAtual = idTransacao;
-                
-                esconderTodosEcras();
-                ecraNovo.style.display = 'block';
-                btnMenuNovo.classList.add('active');
-                tituloPagina.innerText = "Editar Lançamento";
-                subtituloPagina.innerText = "Atualize os dados da sua transação";
-                btnSalvarForm.innerHTML = '<i class="fa-solid fa-pen"></i> Atualizar Transação';
-            }
-        } catch (erro) { console.error(erro); }
-    }
-});
-
-// 4. Botão Limpar Formulário
-document.getElementById('btn-limpar').addEventListener('click', () => {
-    formTransacao.reset();
-    setarDataAtualSegura(); 
-    idEdicaoAtual = null;
-    tituloPagina.innerText = "Novo Lançamento";
-    subtituloPagina.innerText = "Registre uma nova transação financeira";
-    btnSalvarForm.disabled = false;
-    btnSalvarForm.innerHTML = '<i class="fa-solid fa-check"></i> Guardar Lançamento';
-});
-
-// Sair do sistema
-document.getElementById('btn-sair').addEventListener('click', () => { 
-    signOut(auth).then(() => { window.location.href = "login.html"; }); 
-});
+if (btnLimpar) btnLimpar.addEventListener('click', resetarFormulario);
+if (btnSair) {
+    btnSair.addEventListener('click', () => { 
+        signOut(auth).then(() => { window.location.href = "login.html"; }); 
+    });
+}
