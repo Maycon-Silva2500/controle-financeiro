@@ -3,237 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel - AMTech Controle Financeiro</title>
-    <style>
-        /* ESTILO (CSS) */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f7f6; color: #333; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 600px; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        
-        /* Cabeçalho com botão de sair */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        h1 { color: #2c3e50; }
-        .btn-sair { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
-        .btn-sair:hover { background: #c0392b; }
-
-        .dashboard { display: flex; justify-content: space-between; background: #2c3e50; color: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .dashboard div { text-align: center; }
-        .dashboard h2 { font-size: 24px; margin-top: 5px; }
-        .positive { color: #2ecc71; }
-        .negative { color: #e74c3c; }
-        
-        .form-control { display: flex; flex-direction: column; margin-bottom: 15px; }
-        .form-control input, .form-control select { padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; }
-        button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #2980b9; }
-
-        .transaction-list { list-style-type: none; margin-top: 15px; }
-        .transaction-list li { background: #f9f9f9; margin-bottom: 10px; padding: 10px; display: flex; justify-content: space-between; border-left: 5px solid #ccc; border-radius: 4px; }
-        .transaction-list li.receita { border-left-color: #2ecc71; }
-        .transaction-list li.despesa { border-left-color: #e74c3c; }
-
-        .tips-section { margin-top: 25px; padding: 15px; background: #e8f8f5; border-left: 5px solid #1abc9c; border-radius: 4px; }
-    </style>
+    <title>AMTech - Sistemas e Automação</title>
+    
+    <!-- Ícones FontAwesome e Chart.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chamada do seu arquivo CSS separado -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        <!-- 1. ESTRUTURA (HTML) -->
-        <div class="header">
-            <h1>AMTech Painel</h1>
-            <button class="btn-sair" id="btn-sair">Sair</button>
-        </div>
-        
-        <div class="dashboard">
-            <div>
-                <p>Receitas</p>
-                <h2 id="total-receitas" class="positive">R$ 0,00</h2>
-            </div>
-            <div>
-                <p>Saldo Atual</p>
-                <h2 id="saldo-atual">R$ 0,00</h2>
-            </div>
-            <div>
-                <p>Despesas</p>
-                <h2 id="total-despesas" class="negative">R$ 0,00</h2>
-            </div>
-        </div>
-
-        <form id="form-transacao">
-            <div class="form-control">
-                <label for="descricao">Descrição</label>
-                <input type="text" id="descricao" placeholder="Ex: Salário, Conta de Luz..." required>
-            </div>
-            <div class="form-control">
-                <label for="valor">Valor (R$)</label>
-                <input type="number" id="valor" step="0.01" placeholder="Ex: 150.00" required>
-            </div>
-            <div class="form-control">
-                <label for="tipo">Tipo</label>
-                <select id="tipo">
-                    <option value="receita">Receita (Entrada)</option>
-                    <option value="despesa">Despesa (Saída)</option>
-                </select>
-            </div>
-            <button type="submit">Adicionar Transação</button>
-        </form>
-
-        <div class="tips-section" id="area-dicas">
-            <strong>Dica de Investimento:</strong>
-            <p id="texto-dica">Carregando dados...</p>
-        </div>
-
+    <!-- MENU LATERAL -->
+    <aside class="sidebar">
         <div>
-            <h3 style="margin-top: 20px;">Histórico do Mês</h3>
-            <ul class="transaction-list" id="lista-transacoes">
-                <!-- As transações do banco aparecerão aqui -->
-            </ul>
+            <div class="sidebar-header">
+                <img src="logo.png" alt="Logo AMTech">
+            </div>
+            <div class="menu-section">
+                <div class="menu-title">Principal</div>
+                <a class="menu-item active" id="menu-novo"><i class="fa-solid fa-plus-circle"></i> Novo Lançamento</a>
+                <a class="menu-item" id="menu-consulta"><i class="fa-solid fa-table-list"></i> Consulta / Edição</a>
+                <a class="menu-item" id="menu-graficos"><i class="fa-solid fa-chart-line"></i> Gráficos & Relatórios</a>
+                <a class="menu-item" id="menu-fechamento"><i class="fa-solid fa-calendar-check"></i> Fechamento Mensal</a>
+            </div>
         </div>
-    </div>
+        <div class="sidebar-footer">
+            <p class="assinatura-discreta">Desenvolvido por AMTech</p>
+        </div>
+    </aside>
 
-    <!-- 2. LÓGICA (JavaScript) - Conectando ao Banco de Dados Firestore -->
-    <script type="module">
-        // Importando as ferramentas do Firebase (App, Autenticação e Banco de Dados)
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-title">
+                <h1 id="titulo-pagina">Novo Lançamento</h1>
+                <p id="subtitulo-pagina">Registre uma nova transação financeira</p>
+            </div>
+            <div class="topbar-actions">
+                <span id="data-atual" style="color: #6b7280; font-size: 0.9rem; margin-right: 15px;"></span>
+                <button class="btn-sair" id="btn-sair"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+            </div>
+        </header>
 
-        // SUAS CHAVES DO FIREBASE AQUI (Cole as mesmas chaves que usou no login.html)
-        const firebaseConfig = {
-            apiKey: "AIzaSyB67nN2jRUKktgrDWKrfa4eStLwV9-5WEc",
-  authDomain: "amtech-controle-financeiro.firebaseapp.com",
-  projectId: "amtech-controle-financeiro",
-  storageBucket: "amtech-controle-financeiro.firebasestorage.app",
-  messagingSenderId: "370711281254",
-  appId: "1:370711281254:web:c2db1fe87be145701577a7",
-  measurementId: "G-R927NP336V"
-        };
-
-        // Inicializando os serviços
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // Referência para a coleção (pasta) "transacoes" no banco de dados
-        const transacoesRef = collection(db, "transacoes");
-
-        // Capturando elementos do HTML
-        const form = document.getElementById('form-transacao');
-        const btnSair = document.getElementById('btn-sair');
-        const listaTransacoes = document.getElementById('lista-transacoes');
-        
-        // Variável para guardar quem é o usuário logado no momento
-        let usuarioAtual = null;
-
-        // VERIFICAÇÃO DE SEGURANÇA: Observa se o usuário está logado
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Se tiver logado, guarda os dados dele e busca as transações
-                usuarioAtual = user;
-                carregarTransacoes();
-            } else {
-                // Se NÃO tiver logado, manda pro login
-                window.location.href = "login.html";
-            }
-        });
-
-        // BOTÃO DE SAIR: Desloga do sistema
-        btnSair.addEventListener('click', () => {
-            signOut(auth).then(() => {
-                window.location.href = "login.html";
-            });
-        });
-
-        // FUNÇÃO PARA BUSCAR DADOS: Puxa as transações do usuário logado
-        function carregarTransacoes() {
-            // Cria uma consulta (query): "Pegue as transações onde o userId é igual ao ID do meu usuário"
-            const q = query(transacoesRef, where("userId", "==", usuarioAtual.uid));
-
-            // onSnapshot escuta o banco em tempo real. Se mudar lá, muda aqui na hora.
-            onSnapshot(q, (snapshot) => {
-                let transacoes = [];
-                snapshot.forEach((doc) => {
-                    // Guarda os dados e o ID do documento
-                    transacoes.push({ id: doc.id, ...doc.data() }); 
-                });
-                atualizarInterface(transacoes); // Manda desenhar na tela
-            });
-        }
-
-        // FUNÇÃO DE DESENHAR A TELA (Cálculos de receitas, despesas e saldo)
-        function atualizarInterface(transacoes) {
-            listaTransacoes.innerHTML = '';
-            let totalReceitas = 0;
-            let totalDespesas = 0;
-
-            transacoes.forEach((transacao) => {
-                const li = document.createElement('li');
-                li.classList.add(transacao.tipo);
-                li.innerHTML = `${transacao.descricao} <span>R$ ${transacao.valor.toFixed(2)}</span>`;
-                listaTransacoes.appendChild(li);
-
-                if (transacao.tipo === 'receita') {
-                    totalReceitas += transacao.valor;
-                } else {
-                    totalDespesas += transacao.valor;
-                }
-            });
-
-            const saldo = totalReceitas - totalDespesas;
-
-            document.getElementById('total-receitas').innerText = `R$ ${totalReceitas.toFixed(2)}`;
-            document.getElementById('total-despesas').innerText = `R$ ${totalDespesas.toFixed(2)}`;
-            document.getElementById('saldo-atual').innerText = `R$ ${saldo.toFixed(2)}`;
-
-            gerarDica(saldo, totalReceitas);
-        }
-
-        // DICAS DE INVESTIMENTO
-        function gerarDica(saldo, receitas) {
-            const textoDica = document.getElementById('texto-dica');
-            if (receitas === 0) {
-                textoDica.innerText = "Adicione suas receitas para receber dicas.";
-                return;
-            }
-            const proporcaoSobra = saldo / receitas;
-            if (saldo < 0) {
-                textoDica.innerText = "Atenção: Você está gastando mais do que ganha. Tente cortar despesas não essenciais.";
-            } else if (proporcaoSobra > 0 && proporcaoSobra <= 0.1) {
-                textoDica.innerText = "Que bom que sobrou um pouco! Tente guardar esse valor em um CDB de liquidez diária.";
-            } else if (proporcaoSobra > 0.1 && proporcaoSobra <= 0.3) {
-                textoDica.innerText = "Ótimo controle! Com essa margem, você já pode investir no Tesouro Selic.";
-            } else if (proporcaoSobra > 0.3) {
-                textoDica.innerText = "Excelente mês! Considere estudar fundos imobiliários (FIIs) ou ações.";
-            } else {
-                textoDica.innerText = "Contas empatadas. Reduza 5% dos gastos no próximo mês para começar a investir.";
-            }
-        }
-
-        // ADICIONAR NOVA TRANSAÇÃO NO BANCO DE DADOS
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault(); 
+        <div class="content">
             
-            const descricao = document.getElementById('descricao').value;
-            const valor = parseFloat(document.getElementById('valor').value);
-            const tipo = document.getElementById('tipo').value;
+            <!-- ECRÃ 1: NOVO LANÇAMENTO -->
+            <div id="ecra-novo-lancamento">
+                <div class="card">
+                    <div class="card-header"><i class="fa-regular fa-file-lines"></i> Nova Transação</div>
+                    <form id="form-transacao">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="data">Data *</label>
+                                <input type="date" id="data" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="valor">Valor (R$) *</label>
+                                <input type="number" id="valor" step="0.01" placeholder="0,00" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="descricao">Descrição *</label>
+                                <input type="text" id="descricao" placeholder="Descreva a transação..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tipo">Tipo da Transação *</label>
+                                <select id="tipo" required>
+                                    <option value="" disabled selected>Selecione...</option>
+                                    <option value="receita">Receita (Entrada)</option>
+                                    <option value="despesa">Despesa (Saída)</option>
+                                    <option value="investimento">Investimento (Aporte)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-light" id="btn-limpar"><i class="fa-solid fa-eraser"></i> Limpar</button>
+                            <button type="submit" class="btn btn-primary" id="btn-salvar-form"><i class="fa-solid fa-check"></i> Guardar Lançamento</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-            // Envia os dados para a nuvem usando addDoc()
-            try {
-                await addDoc(transacoesRef, {
-                    descricao: descricao,
-                    valor: valor,
-                    tipo: tipo,
-                    userId: usuarioAtual.uid // Carimba a transação com o ID do usuário!
-                });
+            <!-- ECRÃ 2: CONSULTA E EDIÇÃO -->
+            <div id="ecra-consulta" style="display: none;">
+                <div class="card">
+                    <div class="card-header"><i class="fa-solid fa-list-check"></i> Transações Registradas</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela">
+                            <tr><td colspan="5" style="text-align: center;">Carregando dados...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                // Limpa o formulário após salvar
-                document.getElementById('descricao').value = '';
-                document.getElementById('valor').value = '';
-            } catch (error) {
-                console.error("Erro ao adicionar documento: ", error);
-                alert("Erro ao salvar a transação.");
-            }
-        });
-    </script>
+            <!-- ECRÃ 3: GRÁFICOS E RELATÓRIOS -->
+            <div id="ecra-graficos" style="display: none;">
+                <div class="painel-resumo">
+                    <div class="card" style="text-align: center; margin-bottom: 0;">
+                        <p style="color: #6b7280; font-size: 0.9rem;">Total de Receitas</p>
+                        <h2 id="resumo-receitas" class="receita-texto">R$ 0,00</h2>
+                    </div>
+                    <div class="card" style="text-align: center; margin-bottom: 0;">
+                        <p style="color: #6b7280; font-size: 0.9rem;">Total de Despesas</p>
+                        <h2 id="resumo-despesas" class="despesa-texto">R$ 0,00</h2>
+                    </div>
+                    <div class="card" style="text-align: center; margin-bottom: 0;">
+                        <p style="color: #6b7280; font-size: 0.9rem;">Total Investido</p>
+                        <h2 id="resumo-investimentos" class="investimento-texto">R$ 0,00</h2>
+                    </div>
+                    <div class="card" style="text-align: center; margin-bottom: 0; border-bottom: 4px solid #3b82f6;">
+                        <p style="color: #6b7280; font-size: 0.9rem; font-weight: bold;">Caixa Livre</p>
+                        <h2 id="resumo-saldo" style="color: #3b82f6;">R$ 0,00</h2>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <!-- Gráfico Circular -->
+                    <div class="card">
+                        <div class="card-header"><i class="fa-solid fa-chart-pie"></i> Balanço do Mês</div>
+                        <div class="grafico-container">
+                            <canvas id="meuGraficoCircular"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Bot Conselheiro Financeiro -->
+                    <div class="card" style="background: #eef2ff; border: 1px solid #c7d2fe; display: flex; gap: 20px; align-items: flex-start; padding: 30px 25px;">
+                        <div style="background: linear-gradient(135deg, var(--amtech-ciano), var(--amtech-azul)); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; color: #fff; box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3); flex-shrink: 0;">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div style="background: #fff; padding: 20px; border-radius: 15px; border-top-left-radius: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); flex: 1; border: 1px solid #e5e7eb;">
+                            <h3 style="color: var(--amtech-fundo); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> AMBot Analista
+                            </h3>
+                            <p id="texto-dica-bot" style="color: #4b5563; font-size: 0.95rem; line-height: 1.6;">
+                                Carregando análise...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ECRÃ 4: FECHAMENTO MENSAL -->
+            <div id="ecra-fechamento" style="display: none;">
+                <div class="card">
+                    <div class="card-header"><i class="fa-solid fa-lock"></i> Realizar Fechamento</div>
+                    <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 20px;">Selecione o mês para calcular os totais e salvar o histórico permanente no sistema.</p>
+                    <div class="form-grid" style="align-items: end;">
+                        <div class="form-group">
+                            <label for="mes-fechamento">Mês e Ano *</label>
+                            <input type="month" id="mes-fechamento" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" id="btn-fazer-fechamento"><i class="fa-solid fa-box-archive"></i> Gravar Fechamento</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"><i class="fa-solid fa-folder-open"></i> Histórico de Fechamentos</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Referência</th>
+                                <th>Total Receitas</th>
+                                <th>Total Despesas</th>
+                                <th>Investimentos</th>
+                                <th>Caixa Livre</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela-fechamentos">
+                            <tr><td colspan="5" style="text-align: center;">Carregando histórico...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Chamada do seu arquivo JavaScript separado -->
+    <script type="module" src="app.js"></script>
 </body>
 </html>
