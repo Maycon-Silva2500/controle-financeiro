@@ -5,36 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AMTech Financeiro</title>
     
-    <!-- Ícones e Fonte Inter (Google Fonts) -->
+    <!-- Ícones e Fonte Inter -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- CSS e Manifest PWA -->
-    <link rel="stylesheet" href="style.css?v=4">
+    <!-- CSS atualizado com v=5 para limpar o cache do celular -->
+    <link rel="stylesheet" href="style.css?v=5">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
 </head>
 <body>
 
-    <!-- CABEÇALHO COMPACTO (Fixo no topo) -->
-    <header class="app-header">
-        <div class="header-left">
-            <img src="logo.png" alt="AMTech" class="header-logo" onerror="this.style.display='none'">
-            <div class="header-text">
-                <span class="greeting">Olá, bem-vindo!</span>
-                <span id="data-atual" class="date-text"></span>
-            </div>
+    <!-- NAVEGAÇÃO HÍBRIDA (Menu Lateral no PC / Barra Inferior no Mobile) -->
+    <nav class="app-nav">
+        <div class="nav-brand">
+            <img src="logo.png" alt="AMTech" onerror="this.style.display='none'">
         </div>
-        <button class="icon-btn-exit" id="btn-sair" title="Sair da conta">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-        </button>
-    </header>
+        <div class="nav-menu">
+            <a class="nav-item active" id="menu-novo">
+                <i class="fa-solid fa-plus"></i>
+                <span>Lançar</span>
+            </a>
+            <a class="nav-item" id="menu-consulta">
+                <i class="fa-solid fa-list-ul"></i>
+                <span>Consulta</span>
+            </a>
+            <a class="nav-item" id="menu-graficos">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Resumo</span>
+            </a>
+            <a class="nav-item" id="menu-fechamento">
+                <i class="fa-solid fa-lock"></i>
+                <span>Fechar</span>
+            </a>
+        </div>
+    </nav>
 
     <!-- ÁREA PRINCIPAL DE CONTEÚDO -->
     <main class="main-content">
         
-        <!-- TÍTULOS DINÂMICOS DA PÁGINA (Movidos para dentro do ecrã) -->
+        <!-- CABEÇALHO COMPACTO -->
+        <header class="app-header">
+            <div class="header-left">
+                <!-- Logo que só aparece no celular -->
+                <img src="logo.png" alt="AMTech" class="header-logo-mobile" onerror="this.style.display='none'">
+                <div class="header-text">
+                    <span class="greeting" id="saudacao-usuario">A carregar...</span>
+                    <span id="data-atual" class="date-text"></span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" id="btn-theme" title="Mudar Tema">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="icon-btn exit-btn" id="btn-sair" title="Sair da conta">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- TÍTULOS DINÂMICOS -->
         <div class="page-title-area">
             <h1 id="titulo-pagina">Novo Lançamento</h1>
             <p id="subtitulo-pagina">Registre uma nova transação financeira</p>
@@ -52,7 +83,7 @@
                         <input type="number" id="valor" step="0.01" placeholder="0,00" required>
                     </div>
 
-                    <!-- Botões Segmentados para o Tipo de Transação -->
+                    <!-- Botões Segmentados para o Tipo -->
                     <div class="type-segmented-control">
                         <input type="radio" id="tipo-receita" name="ui-tipo" value="receita">
                         <label for="tipo-receita" class="chip receita"><i class="fa-solid fa-arrow-trend-up"></i> Receita</label>
@@ -64,7 +95,7 @@
                         <label for="tipo-investimento" class="chip investimento"><i class="fa-solid fa-piggy-bank"></i> Investir</label>
                     </div>
                     
-                    <!-- Select Original Invisível (Mantém a compatibilidade do seu JS) -->
+                    <!-- Select Original Invisível -->
                     <select id="tipo" required style="display: none;">
                         <option value="" disabled>Selecione...</option>
                         <option value="receita">Receita</option>
@@ -95,7 +126,6 @@
                 <div class="card transparent-card">
                     <div class="list-container">
                         <table class="modern-table">
-                            <!-- Cabeçalho de tabela escondido em mobile para design de lista, mas presente estruturalmente -->
                             <thead>
                                 <tr>
                                     <th>Detalhes</th>
@@ -113,7 +143,6 @@
 
             <!-- ECRÃ 3: GRÁFICOS E RELATÓRIOS -->
             <div id="ecra-graficos" style="display: none;">
-                
                 <!-- Card de Saldo Principal -->
                 <div class="balance-card">
                     <p class="balance-label">Saldo Livre Atual</p>
@@ -151,7 +180,7 @@
                     </div>
                 </div>
 
-                <!-- Bot AMTech -->
+                <!-- Bot AMTech com Dicas -->
                 <div class="ambot-card mt-20">
                     <div class="ambot-avatar"><i class="fa-solid fa-robot"></i></div>
                     <div class="ambot-content">
@@ -186,26 +215,6 @@
 
         </div>
     </main>
-
-    <!-- BARRA DE NAVEGAÇÃO INFERIOR (Mobile First) -->
-    <nav class="bottom-nav">
-        <a class="nav-item active" id="menu-novo">
-            <i class="fa-solid fa-plus"></i>
-            <span>Lançar</span>
-        </a>
-        <a class="nav-item" id="menu-consulta">
-            <i class="fa-solid fa-list-ul"></i>
-            <span>Consulta</span>
-        </a>
-        <a class="nav-item" id="menu-graficos">
-            <i class="fa-solid fa-chart-pie"></i>
-            <span>Resumo</span>
-        </a>
-        <a class="nav-item" id="menu-fechamento">
-            <i class="fa-solid fa-lock"></i>
-            <span>Fechar</span>
-        </a>
-    </nav>
 
     <script type="module" src="app.js"></script>
 </body>
