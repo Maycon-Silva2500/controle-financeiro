@@ -279,37 +279,91 @@ body {
 .amtech-toast.show { transform: translateY(0); opacity: 1; }
 
 /* ==========================================================
-   MODO CELULAR (RESPONSIVO AUTOMÁTICO)
+   MODO CELULAR (PADRÃO DE MERCADO + CORREÇÃO DEFINITIVA)
    ========================================================== */
 @media (max-width: 768px) {
     body { flex-direction: column; }
     
     .app-nav {
-        position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
-        flex-direction: row; border-right: none; border-top: 1px solid var(--border-color);
-        padding: 0 10px; border-radius: 24px 24px 0 0; z-index: 1000;
+        position: fixed; bottom: 0; left: 0; width: 100%; 
+        height: calc(64px + env(safe-area-inset-bottom));
+        flex-direction: row; border-right: none; 
+        border-top: 1px solid var(--border-color);
+        padding: 0 8px env(safe-area-inset-bottom) 8px; 
+        border-radius: 0; z-index: 1000;
+        background: var(--nav-bg);
     }
     
-    .nav-brand { display: none; } /* Esconde o logo do PC */
-    
-    .nav-menu { flex-direction: row; width: 100%; justify-content: space-around; padding: 0; gap: 0; align-items: center;}
+    .nav-brand { display: none; }
+    .nav-menu { flex-direction: row; width: 100%; justify-content: space-around; padding: 0; height: 64px; align-items: center;}
     
     .nav-item { 
-        flex-direction: column; padding: 10px 0; gap: 6px; flex: 1; justify-content: center; 
-        border-radius: 16px; background: transparent !important; margin: 5px;
+        flex-direction: column; gap: 4px; flex: 1; justify-content: center; 
+        border-radius: 12px; background: transparent !important; margin: 0;
+        height: 100%; min-width: 44px;
     }
-    .nav-item i { font-size: 1.3rem; }
-    .nav-item span { font-size: 0.7rem; }
-    .nav-item.active { background: var(--primary-light) !important; }
+    .nav-item i { font-size: 24px; } 
+    .nav-item span { font-size: 11px; font-weight: 500; white-space: nowrap; } 
     
-    .main-content { padding-bottom: calc(85px + env(safe-area-inset-bottom)); }
+    .main-content { padding-bottom: calc(85px + env(safe-area-inset-bottom)); overflow-x: hidden; }
     
-    .app-header { padding: 12px 20px; height: 65px; border-radius: 0 0 20px 20px;}
-    .header-logo-mobile { display: block; height: 32px; border-radius: 6px;} /* Mostra logo pequena */
-    .greeting { font-size: 0.95rem; }
+    /* CABEÇALHO CORRIGIDO */
+    .app-header { padding: 0 16px; height: 56px; border-radius: 0; gap: 10px;}
+    .header-logo-mobile { display: block; height: 24px; border-radius: 4px;}
+    .header-text { flex: 1; min-width: 0; display: flex; flex-direction: column; } 
+    .greeting { 
+        font-size: 16px; 
+        font-weight: 600; 
+        white-space: nowrap !important; 
+        overflow: hidden; 
+        text-overflow: ellipsis; /* Coloca "..." se o nome não couber */
+    } 
     
-    .content, .page-title-area { padding-left: 20px; padding-right: 20px; }
-    .amount-wrapper input { font-size: 2.5rem; }
+    .page-title-area { padding: 16px 16px 8px; }
+    #titulo-pagina { font-size: 24px; font-weight: 700; letter-spacing: -0.5px;} 
+    .content { padding-left: 16px; padding-right: 16px; overflow-x: hidden; }
     
-    #amtech-toast-container { left: 20px; }
+    .amount-wrapper { 
+        padding: 24px 16px; margin-bottom: 24px; border-radius: 16px;
+        display: flex; flex-wrap: nowrap !important; align-items: center; justify-content: center;
+    }
+    .amount-wrapper input { font-size: 36px; font-weight: 700; max-width: 100%; min-width: 0; white-space: nowrap; } 
+    .currency-symbol { font-size: 20px; white-space: nowrap; margin-top: 0;}
+    
+    .chip { padding: 12px 4px; font-size: 13px; border-radius: 12px; white-space: nowrap;}
+    .chip i { font-size: 16px; }
+    
+    .input-icon input { padding: 16px 16px 16px 44px; font-size: 16px; border-radius: 12px; height: 54px; }
+    .input-icon i { left: 16px; font-size: 20px; }
+    
+    .btn-primary-large { padding: 0 20px; height: 52px; font-size: 16px; font-weight: 600; border-radius: 14px; white-space: nowrap; }
+    .btn-ghost { height: 48px; font-size: 15px; }
+    
+    .card { padding: 16px; border-radius: 16px; margin-bottom: 16px;}
+    .balance-card { padding: 24px 20px; border-radius: 16px; margin-bottom: 16px; }
+    .balance-amount { font-size: 32px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
+    
+    /* MINI CARDS CORRIGIDOS (RECEITAS E DESPESAS) */
+    .painel-resumo { gap: 8px; } /* Espaço menor entre os cartões para dar área ao texto */
+    .mini-card { 
+        padding: 12px 8px; /* Padding ajustado */
+        border-radius: 12px; 
+        gap: 8px; 
+        overflow: hidden; 
+    }
+    .mini-card > div {
+        flex: 1;
+        min-width: 0; /* CRUCIAL: Permite que o texto não empurre o layout */
+    }
+    .mini-card h3 { 
+        font-size: 14px !important; /* Fonte ligeiramente menor para caber os 5.000,00 */
+        white-space: nowrap !important; /* Proíbe a quebra */
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+    }
+    .mini-card p { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+    .mini-card i { font-size: 16px; padding: 8px; border-radius: 8px;}
+
+    .modern-table td:nth-child(3) { white-space: nowrap !important; font-size: 15px; }
+    #amtech-toast-container { left: 16px; right: 16px; top: 16px; bottom: auto;}
 }
