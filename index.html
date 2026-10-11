@@ -1,153 +1,162 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMTech - Sistemas e Automação</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AMTech Financeiro</title>
     
-    <!-- Ícones FontAwesome e Chart.js -->
+    <!-- Ícones e Fonte Inter (Google Fonts) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Chamada do ficheiro CSS separado -->
-    <link rel="stylesheet" href="style.css?v=2">
+    <!-- CSS e Manifest PWA -->
+    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
 </head>
 <body>
 
-    <!-- MENU LATERAL -->
-    <aside class="sidebar">
-        <div>
-            <div class="sidebar-header">
-                <img src="logo.png" alt="Logo AMTech" onerror="this.style.display='none'">
-            </div>
-            <div class="menu-section">
-                <div class="menu-title">Principal</div>
-                <a class="menu-item active" id="menu-novo"><i class="fa-solid fa-plus-circle"></i> Novo Lançamento</a>
-                <a class="menu-item" id="menu-consulta"><i class="fa-solid fa-table-list"></i> Consulta / Edição</a>
-                <a class="menu-item" id="menu-graficos"><i class="fa-solid fa-chart-line"></i> Gráficos & Relatórios</a>
-                <a class="menu-item" id="menu-fechamento"><i class="fa-solid fa-calendar-check"></i> Fechamento Mensal</a>
+    <!-- CABEÇALHO COMPACTO (Fixo no topo) -->
+    <header class="app-header">
+        <div class="header-left">
+            <img src="logo.png" alt="AMTech" class="header-logo" onerror="this.style.display='none'">
+            <div class="header-text">
+                <span class="greeting">Olá, bem-vindo!</span>
+                <span id="data-atual" class="date-text"></span>
             </div>
         </div>
-        <div class="sidebar-footer">
-            <p class="assinatura-discreta">Desenvolvido por AMTech</p>
-        </div>
-    </aside>
+        <button class="icon-btn-exit" id="btn-sair" title="Sair da conta">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+    </header>
 
-    <!-- ÁREA PRINCIPAL -->
+    <!-- ÁREA PRINCIPAL DE CONTEÚDO -->
     <main class="main-content">
-        <header class="topbar">
-            <div class="topbar-title">
-                <h1 id="titulo-pagina">Novo Lançamento</h1>
-                <p id="subtitulo-pagina">Registre uma nova transação financeira</p>
-            </div>
-            <div class="topbar-actions">
-                <span id="data-atual" style="color: #6b7280; font-size: 0.9rem; margin-right: 15px;"></span>
-                <button class="btn-sair" id="btn-sair"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
-            </div>
-        </header>
+        
+        <!-- TÍTULOS DINÂMICOS DA PÁGINA (Movidos para dentro do ecrã) -->
+        <div class="page-title-area">
+            <h1 id="titulo-pagina">Novo Lançamento</h1>
+            <p id="subtitulo-pagina">Registre uma nova transação financeira</p>
+        </div>
 
         <div class="content">
             
             <!-- ECRÃ 1: NOVO LANÇAMENTO -->
             <div id="ecra-novo-lancamento">
-                <div class="card">
-                    <div class="card-header"><i class="fa-regular fa-file-lines"></i> Nova Transação</div>
-                    <form id="form-transacao">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="data">Data *</label>
-                                <input type="date" id="data" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="valor">Valor (R$) *</label>
-                                <input type="number" id="valor" step="0.01" placeholder="0,00" required>
-                            </div>
-                            <div class="form-group full-width">
-                                <label for="descricao">Descrição *</label>
-                                <input type="text" id="descricao" placeholder="Descreva a transação..." required>
-                            </div>
-                            <div class="form-group">
-                                <label for="tipo">Tipo da Transação *</label>
-                                <select id="tipo" required>
-                                    <option value="" disabled selected>Selecione...</option>
-                                    <option value="receita">Receita (Entrada)</option>
-                                    <option value="despesa">Despesa (Saída)</option>
-                                    <option value="investimento">Investimento (Aporte)</option>
-                                </select>
-                            </div>
+                <form id="form-transacao" class="premium-form">
+                    
+                    <!-- Campo de Valor em Destaque -->
+                    <div class="amount-wrapper">
+                        <span class="currency-symbol">R$</span>
+                        <input type="number" id="valor" step="0.01" placeholder="0,00" required>
+                    </div>
+
+                    <!-- Botões Segmentados para o Tipo de Transação -->
+                    <div class="type-segmented-control">
+                        <input type="radio" id="tipo-receita" name="ui-tipo" value="receita">
+                        <label for="tipo-receita" class="chip receita"><i class="fa-solid fa-arrow-trend-up"></i> Receita</label>
+
+                        <input type="radio" id="tipo-despesa" name="ui-tipo" value="despesa" checked>
+                        <label for="tipo-despesa" class="chip despesa"><i class="fa-solid fa-arrow-trend-down"></i> Despesa</label>
+
+                        <input type="radio" id="tipo-investimento" name="ui-tipo" value="investimento">
+                        <label for="tipo-investimento" class="chip investimento"><i class="fa-solid fa-piggy-bank"></i> Investir</label>
+                    </div>
+                    
+                    <!-- Select Original Invisível (Mantém a compatibilidade do seu JS) -->
+                    <select id="tipo" required style="display: none;">
+                        <option value="" disabled>Selecione...</option>
+                        <option value="receita">Receita</option>
+                        <option value="despesa" selected>Despesa</option>
+                        <option value="investimento">Investimento</option>
+                    </select>
+
+                    <div class="form-grid">
+                        <div class="form-group input-icon">
+                            <i class="fa-regular fa-calendar"></i>
+                            <input type="date" id="data" required>
                         </div>
-                        <div class="form-actions">
-                            <button type="button" class="btn btn-light" id="btn-limpar"><i class="fa-solid fa-eraser"></i> Limpar</button>
-                            <button type="submit" class="btn btn-primary" id="btn-salvar-form"><i class="fa-solid fa-check"></i> Guardar Lançamento</button>
+                        <div class="form-group input-icon">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                            <input type="text" id="descricao" placeholder="Descrição (ex: Supermercado)" required>
                         </div>
-                    </form>
-                </div>
+                    </div>
+
+                    <div class="form-actions-stack">
+                        <button type="submit" class="btn-primary-large" id="btn-salvar-form">Guardar Lançamento</button>
+                        <button type="button" class="btn-ghost" id="btn-limpar">Limpar campos</button>
+                    </div>
+                </form>
             </div>
 
             <!-- ECRÃ 2: CONSULTA E EDIÇÃO -->
             <div id="ecra-consulta" style="display: none;">
-                <div class="card">
-                    <div class="card-header"><i class="fa-solid fa-list-check"></i> Transações Registradas</div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Descrição</th>
-                                <th>Tipo</th>
-                                <th>Valor</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="corpo-tabela">
-                            <tr><td colspan="5" style="text-align: center;">A carregar dados...</td></tr>
-                        </tbody>
-                    </table>
+                <div class="card transparent-card">
+                    <div class="list-container">
+                        <table class="modern-table">
+                            <!-- Cabeçalho de tabela escondido em mobile para design de lista, mas presente estruturalmente -->
+                            <thead>
+                                <tr>
+                                    <th>Detalhes</th>
+                                    <th>Valor</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="corpo-tabela">
+                                <tr><td colspan="3" class="empty-state">A carregar dados...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <!-- ECRÃ 3: GRÁFICOS E RELATÓRIOS -->
             <div id="ecra-graficos" style="display: none;">
+                
+                <!-- Card de Saldo Principal -->
+                <div class="balance-card">
+                    <p class="balance-label">Saldo Livre Atual</p>
+                    <h2 id="resumo-saldo" class="balance-amount">R$ 0,00</h2>
+                </div>
+
                 <div class="painel-resumo">
-                    <div class="card" style="text-align: center; margin-bottom: 0;">
-                        <p style="color: #6b7280; font-size: 0.9rem;">Total de Receitas</p>
-                        <h2 id="resumo-receitas" class="receita-texto">R$ 0,00</h2>
+                    <div class="mini-card receita-bg">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <div>
+                            <p>Receitas</p>
+                            <h3 id="resumo-receitas">R$ 0,00</h3>
+                        </div>
                     </div>
-                    <div class="card" style="text-align: center; margin-bottom: 0;">
-                        <p style="color: #6b7280; font-size: 0.9rem;">Total de Despesas</p>
-                        <h2 id="resumo-despesas" class="despesa-texto">R$ 0,00</h2>
+                    <div class="mini-card despesa-bg">
+                        <i class="fa-solid fa-arrow-down"></i>
+                        <div>
+                            <p>Despesas</p>
+                            <h3 id="resumo-despesas">R$ 0,00</h3>
+                        </div>
                     </div>
-                    <div class="card" style="text-align: center; margin-bottom: 0;">
-                        <p style="color: #6b7280; font-size: 0.9rem;">Total Investido</p>
-                        <h2 id="resumo-investimentos" class="investimento-texto">R$ 0,00</h2>
-                    </div>
-                    <div class="card" style="text-align: center; margin-bottom: 0; border-bottom: 4px solid #3b82f6;">
-                        <p style="color: #6b7280; font-size: 0.9rem; font-weight: bold;">Caixa Livre</p>
-                        <h2 id="resumo-saldo" style="color: #3b82f6;">R$ 0,00</h2>
+                    <div class="mini-card investimento-bg full-span">
+                        <i class="fa-solid fa-star"></i>
+                        <div>
+                            <p>Total Investido</p>
+                            <h3 id="resumo-investimentos">R$ 0,00</h3>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-grid">
-                    <!-- Gráfico Circular -->
-                    <div class="card">
-                        <div class="card-header"><i class="fa-solid fa-chart-pie"></i> Balanço do Mês</div>
-                        <div class="grafico-container">
-                            <canvas id="meuGraficoCircular"></canvas>
-                        </div>
+                <div class="card mt-20">
+                    <h3 class="card-title">Balanço do Mês</h3>
+                    <div class="grafico-container">
+                        <canvas id="meuGraficoCircular"></canvas>
                     </div>
+                </div>
 
-                    <!-- Bot Conselheiro Financeiro -->
-                    <div class="card" style="background: #eef2ff; border: 1px solid #c7d2fe; display: flex; gap: 20px; align-items: flex-start; padding: 30px 25px;">
-                        <div style="background: linear-gradient(135deg, var(--amtech-ciano), var(--amtech-azul)); width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; color: #fff; box-shadow: 0 4px 10px rgba(0, 119, 182, 0.3); flex-shrink: 0;">
-                            <i class="fa-solid fa-robot"></i>
-                        </div>
-                        <div style="background: #fff; padding: 20px; border-radius: 15px; border-top-left-radius: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.03); flex: 1; border: 1px solid #e5e7eb;">
-                            <h3 style="color: var(--amtech-fundo); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-                                <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> AMBot Analista
-                            </h3>
-                            <p id="texto-dica-bot" style="color: #4b5563; font-size: 0.95rem; line-height: 1.6;">
-                                A carregar análise...
-                            </p>
-                        </div>
+                <!-- Bot AMTech -->
+                <div class="ambot-card mt-20">
+                    <div class="ambot-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="ambot-content">
+                        <h3>AMBot Analista</h3>
+                        <p id="texto-dica-bot">A analisar os seus números...</p>
                     </div>
                 </div>
             </div>
@@ -155,42 +164,49 @@
             <!-- ECRÃ 4: FECHAMENTO MENSAL -->
             <div id="ecra-fechamento" style="display: none;">
                 <div class="card">
-                    <div class="card-header"><i class="fa-solid fa-lock"></i> Realizar Fechamento</div>
-                    <p style="color: #6b7280; font-size: 0.9rem; margin-bottom: 20px;">Selecione o mês para calcular os totais e guardar o histórico permanente no sistema.</p>
-                    <div class="form-grid" style="align-items: end;">
-                        <div class="form-group">
-                            <label for="mes-fechamento">Mês e Ano *</label>
-                            <input type="month" id="mes-fechamento" required>
-                        </div>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-primary" id="btn-fazer-fechamento"><i class="fa-solid fa-box-archive"></i> Gravar Fechamento</button>
-                        </div>
+                    <p class="text-muted">Selecione o mês para fechar e guardar o histórico permanente.</p>
+                    <div class="form-group input-icon mt-15">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <input type="month" id="mes-fechamento" required>
                     </div>
+                    <button type="button" class="btn-primary-large mt-15" id="btn-fazer-fechamento">Gravar Fechamento</button>
                 </div>
 
-                <div class="card">
-                    <div class="card-header"><i class="fa-solid fa-folder-open"></i> Histórico de Fechamentos</div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Referência</th>
-                                <th>Total Receitas</th>
-                                <th>Total Despesas</th>
-                                <th>Investimentos</th>
-                                <th>Saldo Final</th>
-                            </tr>
-                        </thead>
-                        <tbody id="corpo-tabela-fechamentos">
-                            <tr><td colspan="5" style="text-align: center;">A carregar histórico...</td></tr>
-                        </tbody>
-                    </table>
+                <div class="card mt-20 p-0">
+                    <h3 class="card-title p-20 pb-0">Histórico</h3>
+                    <div class="list-container">
+                        <table class="modern-table">
+                            <tbody id="corpo-tabela-fechamentos">
+                                <tr><td colspan="4" class="empty-state">Nenhum histórico registado.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
         </div>
     </main>
 
-    <!-- Chamada do ficheiro JavaScript separado -->
+    <!-- BARRA DE NAVEGAÇÃO INFERIOR (Mobile First) -->
+    <nav class="bottom-nav">
+        <a class="nav-item active" id="menu-novo">
+            <i class="fa-solid fa-plus"></i>
+            <span>Lançar</span>
+        </a>
+        <a class="nav-item" id="menu-consulta">
+            <i class="fa-solid fa-list-ul"></i>
+            <span>Consulta</span>
+        </a>
+        <a class="nav-item" id="menu-graficos">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Resumo</span>
+        </a>
+        <a class="nav-item" id="menu-fechamento">
+            <i class="fa-solid fa-lock"></i>
+            <span>Fechar</span>
+        </a>
+    </nav>
+
     <script type="module" src="app.js"></script>
 </body>
 </html>
