@@ -1,206 +1,104 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AMTech Financeiro</title>
-    
-    <!-- NOVAS LINHAS PARA O ÃCONE DA SUA EMPRESA -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Acesse seu controle financeiro AMTech.">
+    <meta name="color-scheme" content="dark light">
+    <title>Entrar | AMTech Financeiro</title>
+
     <link rel="icon" href="assets/images/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="assets/images/icon-192.png">
-    <!-- FIM DAS NOVAS LINHAS -->
+    <meta name="theme-color" content="#08090A">
 
-    <!-- Ãcones e Fonte Inter -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Resto do seu cÃ³digo... -->
-    <!-- Ãcones para os botÃµes -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        /* ESTILO (CSS) - Design original mantido e aprimorado */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #2c3e50; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: #333;
-        }
-        .login-container {
-            background: #fff;
-            padding: 40px 30px; /* Um pouco mais de padding superior */
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 400px;
-            position: relative;
-            text-align: center; /* Centraliza a logo e os textos principais */
-        }
-        
-        /* ESTILO DA LOGO */
-        .logo-login {
-            max-width: 160px; /* Tamanho ajustÃ¡vel para ficar harmonioso */
-            height: auto;
-            margin-bottom: 15px;
-            display: inline-block;
-        }
+    <!-- Aplica o tema salvo antes da primeira pintura -->
+    <script>try { var t = localStorage.getItem('amtech-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}</script>
 
-        h1 {
-            margin-bottom: 5px;
-            color: #2c3e50;
-        }
-        .subtitle {
-            margin-bottom: 25px;
-            color: #002fff;
-            font-size: 0.95rem;
-        }
-        
-        /* O formulÃ¡rio volta a alinhar o texto Ã  esquerda */
-        form {
-            text-align: left;
-        }
-
-        .form-control {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-        }
-        .form-control label {
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #2c3e50;
-            font-size: 0.9rem;
-        }
-        .form-control input {
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: 0.3s;
-            outline: none;
-        }
-        .form-control input:focus {
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-        button:hover { background: #2980b9; }
-        button:disabled { opacity: 0.7; cursor: not-allowed; }
-        
-        .btn-secondary {
-            background: #ecf0f1;
-            color: #2c3e50;
-        }
-        .btn-secondary:hover { background: #bdc3c7; }
-        
-        .links-area {
-            text-align: center;
-            margin-top: 15px;
-        }
-        .link-text {
-            color: #3498db;
-            text-decoration: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: 0.2s;
-        }
-        .link-text:hover { text-decoration: underline; }
-
-        /* Esconder a view de recuperar por padrÃ£o */
-        #view-recuperar { display: none; }
-
-        /* NOTIFICAÃ‡Ã•ES TOAST */
-        #toast-container { position: fixed; top: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; pointer-events: none; }
-        .toast { background-color: #fff; min-width: 300px; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: auto; border-left: 6px solid #3498db;}
-        .toast.show { transform: translateX(0); opacity: 1; }
-    </style>
+    <link rel="stylesheet" href="design-system/tokens.css?v=3">
+    <link rel="stylesheet" href="design-system/components.css?v=3">
+    <link rel="stylesheet" href="assets/css/login.css?v=5">
 </head>
 <body>
 
-    <!-- Container das notificaÃ§Ãµes visuais -->
-    <div id="toast-container"></div>
+    <button type="button" class="icon-btn tema-flutuante" id="btn-theme" title="Alternar entre tema claro e escuro" aria-label="Alternar entre tema claro e escuro">
+        <svg class="icon" aria-hidden="true"><use id="icone-tema" href="assets/icons/sprite.svg#i-moon"/></svg>
+    </button>
 
-    <div class="login-container">
-        
-        <!-- VISTA 1: LOGIN E REGISTO -->
+    <!-- Container das notificações visuais -->
+    <div id="toast-container" aria-live="polite"></div>
+
+    <main class="login-container">
+
+        <!-- Vista 1: login e registro -->
         <div id="view-login">
-            <!-- AQUI ENTRA A LOGO -->
             <img src="assets/images/logo.png" alt="Logo AMTech" class="logo-login" onerror="this.style.display='none'">
-            
-            <p class="subtitle"><strong>CONTROLE FINANCEIRO</strong></p>
 
-            <form id="form-login">
+            <p class="subtitle label-lg">Controle financeiro</p>
+
+            <form id="form-login" novalidate>
                 <div class="form-control">
                     <label for="email">E-mail</label>
-                    <input type="email" id="email" placeholder="seu@email.com" required>
+                    <div class="input-icon">
+                        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-mail"/></svg>
+                        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" inputmode="email" required aria-describedby="email-erro">
+                    </div>
+                    <p class="field-error" id="email-erro" role="alert" hidden></p>
                 </div>
                 <div class="form-control">
                     <label for="senha">Senha</label>
-                    <input type="password" id="senha" placeholder="Sua senha " required>
+                    <div class="input-icon has-action">
+                        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-lock"/></svg>
+                        <input type="password" id="senha" placeholder="Sua senha" autocomplete="current-password" required aria-describedby="senha-ajuda senha-erro">
+                        <button type="button" class="toggle-senha" data-alvo="senha" aria-label="Mostrar senha" aria-pressed="false">
+                            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-eye"/></svg>
+                        </button>
+                    </div>
+                    <p class="field-hint" id="senha-ajuda">Mínimo de 6 caracteres para criar uma conta.</p>
+                    <p class="field-error" id="senha-erro" role="alert" hidden></p>
                 </div>
-                
-                <button type="submit" id="btn-entrar"><i class="fa-solid fa-right-to-bracket"></i> Entrar</button>
-                <button type="button" class="btn-secondary" id="btn-cadastrar"><i class="fa-solid fa-user-plus"></i> Criar Conta</button>
+
+                <button type="submit" class="cf-btn cf-btn-primary" id="btn-entrar"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-log-in"/></svg> Entrar</button>
+                <button type="button" class="cf-btn cf-btn-secondary" id="btn-cadastrar"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-user-plus"/></svg> Criar conta</button>
             </form>
 
             <div class="links-area">
-                <a class="link-text" id="btn-mostrar-recuperar">Esqueceu a senha?</a>
+                <button type="button" class="link-text" id="btn-mostrar-recuperar">Esqueceu a senha?</button>
             </div>
         </div>
 
-        <!-- VISTA 2: RECUPERAR SENHA -->
+        <!-- Vista 2: recuperar senha -->
         <div id="view-recuperar">
-            <!-- AQUI ENTRA A LOGO NA TELA DE RECUPERAÃ‡ÃƒO TAMBÃ‰M -->
             <img src="assets/images/logo.png" alt="Logo AMTech" class="logo-login" onerror="this.style.display='none'">
-            
-            <h1>RecuperaÃ§Ã£o</h1>
-            <p class="subtitle">Digite seu e-mail para receber um link de redefiniÃ§Ã£o de senha.</p>
 
-            <form id="form-recuperar">
+            <h1>Recuperar senha</h1>
+            <p class="subtitle">Digite seu e-mail para receber um link de redefinição de senha.</p>
+
+            <form id="form-recuperar" novalidate>
                 <div class="form-control">
-                    <label for="email-recuperar">E-mail Registrado</label>
-                    <input type="email" id="email-recuperar" placeholder="seu@email.com" required>
+                    <label for="email-recuperar">E-mail cadastrado</label>
+                    <div class="input-icon">
+                        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-mail"/></svg>
+                        <input type="email" id="email-recuperar" placeholder="seu@email.com" autocomplete="email" inputmode="email" required aria-describedby="email-recuperar-erro">
+                    </div>
+                    <p class="field-error" id="email-recuperar-erro" role="alert" hidden></p>
                 </div>
-                
-                <button type="submit" id="btn-enviar-link"><i class="fa-solid fa-paper-plane"></i> Enviar Link</button>
+
+                <button type="submit" class="cf-btn cf-btn-primary" id="btn-enviar-link"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-mail"/></svg> Enviar link</button>
             </form>
 
             <div class="links-area">
-                <a class="link-text" id="btn-voltar-login" style="color: #7f8c8d;"><i class="fa-solid fa-arrow-left"></i> Voltar para o Login</a>
+                <button type="button" class="link-text link-muted" id="btn-voltar-login"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-arrow-left"/></svg> Voltar para o login</button>
             </div>
         </div>
 
-    </div>
+    </main>
 
     <!-- JAVASCRIPT E FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { 
-            getAuth, 
-            signInWithEmailAndPassword, 
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
             createUserWithEmailAndPassword,
             sendPasswordResetEmail
         } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -219,61 +117,155 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Sistema Visual de NotificaÃ§Ãµes
+        const $ = (id) => document.getElementById(id);
+        const SPRITE = 'assets/icons/sprite.svg';
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+
+        // ---------- Tema (claro, escuro ou automático) ----------
+        const raiz = document.documentElement;
+        const consultaClaro = window.matchMedia('(prefers-color-scheme: light)');
+        const lerTema = () => { try { return localStorage.getItem('amtech-theme'); } catch (e) { return null; } };
+        function temaEscuro() {
+            const salvo = lerTema();
+            return salvo === 'light' || salvo === 'dark' ? salvo === 'dark' : !consultaClaro.matches;
+        }
+        function atualizarTema() {
+            $('icone-tema').setAttribute('href', `${SPRITE}#i-${temaEscuro() ? 'sun' : 'moon'}`);
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', getComputedStyle(raiz).getPropertyValue('--surface-100').trim());
+        }
+        $('btn-theme').addEventListener('click', () => {
+            const proximo = temaEscuro() ? 'light' : 'dark';
+            raiz.setAttribute('data-theme', proximo);
+            try { localStorage.setItem('amtech-theme', proximo); } catch (e) { /* sem persistência */ }
+            atualizarTema();
+        });
+        consultaClaro.addEventListener('change', atualizarTema);
+        atualizarTema();
+
+        // ---------- Elementos e notificações ----------
+        function iconeSvg(nome, cor) {
+            const svg = document.createElementNS(SVG_NS, 'svg');
+            svg.setAttribute('class', 'icon');
+            svg.setAttribute('aria-hidden', 'true');
+            if (cor) svg.style.color = cor;
+            const uso = document.createElementNS(SVG_NS, 'use');
+            uso.setAttribute('href', `${SPRITE}#i-${nome}`);
+            svg.appendChild(uso);
+            return svg;
+        }
+        const ICONES = { entrar: 'log-in', criar: 'user-plus', enviar: 'mail' };
+        function definirBotao(btn, icone, texto) {
+            btn.replaceChildren(iconeSvg(icone), document.createTextNode(' ' + texto));
+        }
+
         function mostrarNotificacao(mensagem, tipo = 'sucesso') {
-            const container = document.getElementById('toast-container');
-            let corDestaque = '#2ecc71'; // Verde
-            let iconeClass = 'fa-circle-check';
-            if (tipo === 'info') { corDestaque = '#3498db'; iconeClass = 'fa-circle-info'; } 
-            if (tipo === 'erro') { corDestaque = '#e74c3c'; iconeClass = 'fa-circle-exclamation'; } 
-            
+            const container = $('toast-container');
+            const estilos = {
+                sucesso: { cor: 'var(--success)', icone: 'circle-check' },
+                info: { cor: 'var(--category-blue)', icone: 'info' },
+                erro: { cor: 'var(--danger)', icone: 'circle-alert' }
+            };
+            const { cor, icone } = estilos[tipo] || estilos.sucesso;
+
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.style.borderLeftColor = corDestaque;
-            toast.innerHTML = `<i class="fa-solid ${iconeClass}" style="color: ${corDestaque}; font-size: 24px;"></i><span style="color: #333; font-weight: 500; font-size: 14px;">${mensagem}</span>`;
-            
+            toast.setAttribute('role', tipo === 'erro' ? 'alert' : 'status');
+            const texto = document.createElement('span');
+            texto.textContent = mensagem;
+            toast.append(iconeSvg(icone, cor), texto);
+
             container.appendChild(toast);
             requestAnimationFrame(() => { requestAnimationFrame(() => { toast.classList.add('show'); }); });
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => { toast.remove(); }, 400); }, 3500);
         }
 
-        // AlternÃ¢ncia entre as telas de Login e RecuperaÃ§Ã£o
-        const viewLogin = document.getElementById('view-login');
-        const viewRecuperar = document.getElementById('view-recuperar');
-        
-        document.getElementById('btn-mostrar-recuperar').addEventListener('click', () => {
-            viewLogin.style.display = 'none';
-            viewRecuperar.style.display = 'block';
+        // ---------- Validação em linha ----------
+        const EMAIL_VALIDO = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        function mostrarErro(input, mensagem) {
+            const erro = $(`${input.id}-erro`);
+            input.setAttribute('aria-invalid', 'true');
+            input.closest('.input-icon').classList.add('is-invalid');
+            erro.textContent = mensagem;
+            erro.hidden = false;
+        }
+        function limparErro(input) {
+            const erro = $(`${input.id}-erro`);
+            input.removeAttribute('aria-invalid');
+            input.closest('.input-icon').classList.remove('is-invalid');
+            erro.textContent = '';
+            erro.hidden = true;
+        }
+        document.addEventListener('input', (e) => { if (e.target.matches('[aria-invalid="true"]')) limparErro(e.target); });
+        function validarEmail(input) {
+            const valor = input.value.trim();
+            if (!valor) { mostrarErro(input, 'Informe o seu e-mail.'); return false; }
+            if (!EMAIL_VALIDO.test(valor)) { mostrarErro(input, 'Esse e-mail parece incompleto. Exemplo: nome@empresa.com'); return false; }
+            return true;
+        }
+
+        // Mostrar ou ocultar a senha
+        document.querySelector('.toggle-senha').addEventListener('click', (e) => {
+            const botao = e.currentTarget;
+            const campo = $(botao.dataset.alvo);
+            const mostrar = campo.type === 'password';
+            campo.type = mostrar ? 'text' : 'password';
+            botao.setAttribute('aria-pressed', String(mostrar));
+            botao.setAttribute('aria-label', mostrar ? 'Ocultar senha' : 'Mostrar senha');
+            botao.querySelector('use').setAttribute('href', `${SPRITE}#i-${mostrar ? 'eye-off' : 'eye'}`);
         });
 
-        document.getElementById('btn-voltar-login').addEventListener('click', () => {
+        // Alternância entre as telas de Login e Recuperação
+        const viewLogin = $('view-login');
+        const viewRecuperar = $('view-recuperar');
+
+        $('btn-mostrar-recuperar').addEventListener('click', () => {
+            $('email-recuperar').value = $('email').value.trim();
+            viewLogin.style.display = 'none';
+            viewRecuperar.style.display = 'block';
+            $('email-recuperar').focus();
+        });
+
+        $('btn-voltar-login').addEventListener('click', () => {
             viewRecuperar.style.display = 'none';
             viewLogin.style.display = 'block';
+            $('email').focus();
         });
 
         // ==========================================
         // 1. FAZER LOGIN
         // ==========================================
-        document.getElementById('form-login').addEventListener('submit', (e) => {
-            e.preventDefault(); 
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const btn = document.getElementById('btn-entrar');
+        $('form-login').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const campoEmail = $('email');
+            const campoSenha = $('senha');
+            [campoEmail, campoSenha].forEach(limparErro);
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
+            const emailOk = validarEmail(campoEmail);
+            const senhaOk = !!campoSenha.value;
+            if (!senhaOk) mostrarErro(campoSenha, 'Informe a sua senha.');
+            if (!emailOk) { campoEmail.focus(); return; }
+            if (!senhaOk) { campoSenha.focus(); return; }
+
+            const btn = $('btn-entrar');
+            definirBotao(btn, 'loader-circle', 'Entrando…');
             btn.disabled = true;
 
-            signInWithEmailAndPassword(auth, email, senha)
-                .then((userCredential) => {
-                    mostrarNotificacao("Acesso autorizado!", "sucesso");
+            signInWithEmailAndPassword(auth, campoEmail.value.trim(), campoSenha.value)
+                .then(() => {
+                    mostrarNotificacao("Acesso autorizado.", "sucesso");
                     setTimeout(() => { window.location.href = "index.html"; }, 1000);
                 })
                 .catch((error) => {
-                    btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar';
+                    definirBotao(btn, ICONES.entrar, 'Entrar');
                     btn.disabled = false;
-                    
+
                     if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        mostrarNotificacao("E-mail ou senha incorretos.", "erro");
+                        mostrarErro(campoSenha, 'E-mail ou senha incorretos.');
+                        campoSenha.focus();
+                    } else if (error.code === 'auth/too-many-requests') {
+                        mostrarNotificacao("Muitas tentativas. Aguarde alguns minutos e tente de novo.", "erro");
+                    } else if (error.code === 'auth/network-request-failed') {
+                        mostrarNotificacao("Sem conexão. Verifique a internet e tente de novo.", "erro");
                     } else {
                         mostrarNotificacao("Erro ao entrar. Tente novamente.", "erro");
                     }
@@ -283,28 +275,36 @@
         // ==========================================
         // 2. CRIAR CONTA
         // ==========================================
-        document.getElementById('btn-cadastrar').addEventListener('click', () => {
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const btn = document.getElementById('btn-cadastrar');
+        $('btn-cadastrar').addEventListener('click', () => {
+            const campoEmail = $('email');
+            const campoSenha = $('senha');
+            [campoEmail, campoSenha].forEach(limparErro);
 
-            if(!email) { mostrarNotificacao("Digite um e-mail para cadastrar.", "erro"); return; }
-            if(senha.length < 6) { mostrarNotificacao("A senha deve ter pelo menos 6 caracteres.", "erro"); return; }
+            const emailOk = validarEmail(campoEmail);
+            const senhaOk = campoSenha.value.length >= 6;
+            if (!senhaOk) mostrarErro(campoSenha, 'A senha deve ter pelo menos 6 caracteres.');
+            if (!emailOk) { campoEmail.focus(); return; }
+            if (!senhaOk) { campoSenha.focus(); return; }
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Criando...';
+            const btn = $('btn-cadastrar');
+            definirBotao(btn, 'loader-circle', 'Criando…');
             btn.disabled = true;
 
-            createUserWithEmailAndPassword(auth, email, senha)
-                .then((userCredential) => {
-                    mostrarNotificacao("Conta criada com sucesso! Bem-vindo.", "sucesso");
+            createUserWithEmailAndPassword(auth, campoEmail.value.trim(), campoSenha.value)
+                .then(() => {
+                    mostrarNotificacao("Conta criada com sucesso.", "sucesso");
                     setTimeout(() => { window.location.href = "index.html"; }, 1500);
                 })
                 .catch((error) => {
-                    btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Criar Conta';
+                    definirBotao(btn, ICONES.criar, 'Criar conta');
                     btn.disabled = false;
-                    
+
                     if (error.code === 'auth/email-already-in-use') {
-                        mostrarNotificacao("Este e-mail jÃ¡ possui uma conta.", "erro");
+                        mostrarErro(campoEmail, 'Este e-mail já possui uma conta. Use "Entrar".');
+                        campoEmail.focus();
+                    } else if (error.code === 'auth/weak-password') {
+                        mostrarErro(campoSenha, 'A senha é muito fraca. Use pelo menos 6 caracteres.');
+                        campoSenha.focus();
                     } else {
                         mostrarNotificacao("Erro ao criar conta.", "erro");
                     }
@@ -314,32 +314,34 @@
         // ==========================================
         // 3. RECUPERAR SENHA
         // ==========================================
-        document.getElementById('form-recuperar').addEventListener('submit', (e) => {
+        $('form-recuperar').addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = document.getElementById('email-recuperar').value;
-            const btn = document.getElementById('btn-enviar-link');
+            const campo = $('email-recuperar');
+            limparErro(campo);
+            if (!validarEmail(campo)) { campo.focus(); return; }
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+            const btn = $('btn-enviar-link');
+            definirBotao(btn, 'loader-circle', 'Enviando…');
             btn.disabled = true;
 
-            sendPasswordResetEmail(auth, email)
+            sendPasswordResetEmail(auth, campo.value.trim())
                 .then(() => {
-                    mostrarNotificacao("Link enviado! Verifique sua caixa de e-mail.", "sucesso");
+                    mostrarNotificacao("Link enviado. Verifique sua caixa de e-mail.", "sucesso");
                     setTimeout(() => {
-                        document.getElementById('email-recuperar').value = '';
-                        document.getElementById('btn-voltar-login').click();
-                        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Link';
+                        campo.value = '';
+                        $('btn-voltar-login').click();
+                        definirBotao(btn, ICONES.enviar, 'Enviar link');
                         btn.disabled = false;
                     }, 3000);
                 })
                 .catch((error) => {
-                    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Link';
+                    definirBotao(btn, ICONES.enviar, 'Enviar link');
                     btn.disabled = false;
-                    
+
                     if (error.code === 'auth/invalid-email') {
-                        mostrarNotificacao("Formato de e-mail invÃ¡lido.", "erro");
+                        mostrarErro(campo, 'Formato de e-mail inválido.');
                     } else {
-                        mostrarNotificacao("Erro ao enviar o link de recuperaÃ§Ã£o.", "erro");
+                        mostrarNotificacao("Erro ao enviar o link de recuperação.", "erro");
                     }
                 });
         });

@@ -9,13 +9,40 @@ Aplicação web estática para controle financeiro, com autenticação e persist
 ├── index.html             # aplicação principal
 ├── login.html             # autenticação e recuperação de acesso
 ├── manifest.json          # metadados do app instalável (PWA)
+├── firestore.rules        # regras sugeridas do Firestore (lançamentos, fechamentos e perfis por usuário)
+├── design-system/         # Cofre: tokens, componentes de referência e gerador (fonte única do visual)
+│   ├── tokens.json        # fonte dos tokens
+│   ├── tokens.css         # gerado de tokens.json
+│   ├── components.css
+│   ├── tools/build_tokens.py
+│   └── README.md
 └── assets/
-    ├── css/style.css      # estilos da aplicação
+    ├── css/style.css      # layout responsivo (desktop, tablet, celular) e acabamento HUD, sobre tokens e componentes do Cofre
+    ├── css/login.css      # autenticação (usa os tokens)
     ├── js/app.js          # interface, regras e integração Firebase
+    ├── icons/sprite.svg   # ícones Lucide
+    ├── help/              # imagens ilustradas da tela de Ajuda (geradas)
     └── images/            # logo, favicon e ícones do PWA
+
+tools/
+└── gerar_ajuda.py         # recria as imagens da Ajuda a partir do próprio app
 ```
 
 As páginas HTML ficam na raiz para funcionar com hospedagem estática. Arquivos de cada camada ficam em `assets/` por tipo. O JavaScript ainda concentra interface, regras e acesso a dados; conforme o projeto crescer, separar módulos de autenticação, transações, relatórios e serviços Firebase será o próximo passo natural.
+
+## Design system
+
+Os tokens do Cofre ficam em [`design-system/tokens.json`](design-system/tokens.json); [`design-system/tokens.css`](design-system/tokens.css) é gerado por `python design-system/tools/build_tokens.py` e carregado antes de `style.css` e `login.css`. Para mudar cores, fonte, raios ou sombras, edite `tokens.json` e gere o CSS de novo. O tema escuro é o padrão. As regras de uso estão em [`design-system/README.md`](design-system/README.md).
+
+Layout em três faixas: acima de 1024px menu lateral (pode ser recolhido pelo usuário), de 681 a 1024px trilho de ícones e até 680px barra inferior; os blocos internos usam container queries. Validado no Edge em 1440, 1024, 768, 390 e 320px, nos temas claro e escuro.
+
+## Foto de perfil
+
+A foto é recortada em quadrado, reduzida para 160 px e comprimida (WebP, cerca de 10 KB) no navegador; o arquivo original nunca é enviado. Só essa versão pequena é gravada, em `perfis/{uid}` no Firestore, com cópia em `localStorage` para exibir na hora. Se o servidor recusar a gravação (regras sem a coleção `perfis`), a foto fica só no aparelho. A regra necessária está em [`firestore.rules`](firestore.rules).
+
+## Ajuda
+
+A tela Ajuda explica cada tela e cada campo com imagens numeradas (versão escura e clara). Para regenerá-las depois de mudar o visual: `pip install playwright pillow` e `python tools/gerar_ajuda.py`. Os números das imagens precisam continuar batendo com as listas numeradas da seção Ajuda do `index.html`.
 
 ## Executar
 
