@@ -1,21 +1,21 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AMTech Financeiro</title>
     
-    <!-- NOVAS LINHAS PARA O ÍCONE DA SUA EMPRESA -->
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <!-- NOVAS LINHAS PARA O ÃCONE DA SUA EMPRESA -->
+    <link rel="icon" href="assets/images/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/icon-192.png">
     <!-- FIM DAS NOVAS LINHAS -->
 
-    <!-- Ícones e Fonte Inter -->
+    <!-- Ãcones e Fonte Inter -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Resto do seu código... -->
-    <!-- Ícones para os botões -->
+    <!-- Resto do seu cÃ³digo... -->
+    <!-- Ãcones para os botÃµes -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -47,7 +47,7 @@
         
         /* ESTILO DA LOGO */
         .logo-login {
-            max-width: 160px; /* Tamanho ajustável para ficar harmonioso */
+            max-width: 160px; /* Tamanho ajustÃ¡vel para ficar harmonioso */
             height: auto;
             margin-bottom: 15px;
             display: inline-block;
@@ -63,7 +63,7 @@
             font-size: 0.95rem;
         }
         
-        /* O formulário volta a alinhar o texto à esquerda */
+        /* O formulÃ¡rio volta a alinhar o texto Ã  esquerda */
         form {
             text-align: left;
         }
@@ -129,10 +129,10 @@
         }
         .link-text:hover { text-decoration: underline; }
 
-        /* Esconder a view de recuperar por padrão */
+        /* Esconder a view de recuperar por padrÃ£o */
         #view-recuperar { display: none; }
 
-        /* NOTIFICAÇÕES TOAST */
+        /* NOTIFICAÃ‡Ã•ES TOAST */
         #toast-container { position: fixed; top: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; pointer-events: none; }
         .toast { background-color: #fff; min-width: 300px; padding: 16px 20px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 15px; transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: auto; border-left: 6px solid #3498db;}
         .toast.show { transform: translateX(0); opacity: 1; }
@@ -140,7 +140,7 @@
 </head>
 <body>
 
-    <!-- Container das notificações visuais -->
+    <!-- Container das notificaÃ§Ãµes visuais -->
     <div id="toast-container"></div>
 
     <div class="login-container">
@@ -148,7 +148,7 @@
         <!-- VISTA 1: LOGIN E REGISTO -->
         <div id="view-login">
             <!-- AQUI ENTRA A LOGO -->
-            <img src="logo.png" alt="Logo AMTech" class="logo-login" onerror="this.style.display='none'">
+            <img src="assets/images/logo.png" alt="Logo AMTech" class="logo-login" onerror="this.style.display='none'">
             
             <p class="subtitle"><strong>CONTROLE FINANCEIRO</strong></p>
 
@@ -173,11 +173,11 @@
 
         <!-- VISTA 2: RECUPERAR SENHA -->
         <div id="view-recuperar">
-            <!-- AQUI ENTRA A LOGO NA TELA DE RECUPERAÇÃO TAMBÉM -->
-            <img src="logo.png" alt="Logo AMTech" class="logo-login" onerror="this.style.display='none'">
+            <!-- AQUI ENTRA A LOGO NA TELA DE RECUPERAÃ‡ÃƒO TAMBÃ‰M -->
+            <img src="assets/images/logo.png" alt="Logo AMTech" class="logo-login" onerror="this.style.display='none'">
             
-            <h1>Recuperação</h1>
-            <p class="subtitle">Digite seu e-mail para receber um link de redefinição de senha.</p>
+            <h1>RecuperaÃ§Ã£o</h1>
+            <p class="subtitle">Digite seu e-mail para receber um link de redefiniÃ§Ã£o de senha.</p>
 
             <form id="form-recuperar">
                 <div class="form-control">
@@ -219,7 +219,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Sistema Visual de Notificações
+        // Sistema Visual de NotificaÃ§Ãµes
         function mostrarNotificacao(mensagem, tipo = 'sucesso') {
             const container = document.getElementById('toast-container');
             let corDestaque = '#2ecc71'; // Verde
@@ -237,7 +237,7 @@
             setTimeout(() => { toast.classList.remove('show'); setTimeout(() => { toast.remove(); }, 400); }, 3500);
         }
 
-        // Alternância entre as telas de Login e Recuperação
+        // AlternÃ¢ncia entre as telas de Login e RecuperaÃ§Ã£o
         const viewLogin = document.getElementById('view-login');
         const viewRecuperar = document.getElementById('view-recuperar');
         
@@ -304,7 +304,7 @@
                     btn.disabled = false;
                     
                     if (error.code === 'auth/email-already-in-use') {
-                        mostrarNotificacao("Este e-mail já possui uma conta.", "erro");
+                        mostrarNotificacao("Este e-mail jÃ¡ possui uma conta.", "erro");
                     } else {
                         mostrarNotificacao("Erro ao criar conta.", "erro");
                     }
@@ -337,9 +337,9 @@
                     btn.disabled = false;
                     
                     if (error.code === 'auth/invalid-email') {
-                        mostrarNotificacao("Formato de e-mail inválido.", "erro");
+                        mostrarNotificacao("Formato de e-mail invÃ¡lido.", "erro");
                     } else {
-                        mostrarNotificacao("Erro ao enviar o link de recuperação.", "erro");
+                        mostrarNotificacao("Erro ao enviar o link de recuperaÃ§Ã£o.", "erro");
                     }
                 });
         });

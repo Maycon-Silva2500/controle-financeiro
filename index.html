@@ -1,41 +1,41 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AMTech Financeiro</title>
     
-    <!-- NOVAS LINHAS PARA O ÍCONE DA SUA EMPRESA -->
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <!-- NOVAS LINHAS PARA O ÃCONE DA SUA EMPRESA -->
+    <link rel="icon" href="assets/images/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/icon-192.png">
     <!-- FIM DAS NOVAS LINHAS -->
 
-    <!-- Ícones e Fonte Inter -->
+    <!-- Ãcones e Fonte Inter -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Resto do seu código... -->
-    <!-- Ícones e Fonte Inter -->
+    <!-- Resto do seu cÃ³digo... -->
+    <!-- Ãcones e Fonte Inter -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <!-- CSS atualizado com v=5 para limpar o cache do celular -->
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="assets/css/style.css?v=5">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
 </head>
 <body>
 
-    <!-- NAVEGAÇÃO HÍBRIDA (Menu Lateral no PC / Barra Inferior no Mobile) -->
+    <!-- NAVEGAÃ‡ÃƒO HÃBRIDA (Menu Lateral no PC / Barra Inferior no Mobile) -->
     <nav class="app-nav">
         <div class="nav-brand">
-            <img src="logo.png" alt="AMTech" onerror="this.style.display='none'">
+            <img src="assets/images/logo.png" alt="AMTech" onerror="this.style.display='none'">
         </div>
         <div class="nav-menu">
             <a class="nav-item active" id="menu-novo">
                 <i class="fa-solid fa-plus"></i>
-                <span>Lançar</span>
+                <span>LanÃ§ar</span>
             </a>
             <a class="nav-item" id="menu-consulta">
                 <i class="fa-solid fa-list-ul"></i>
@@ -47,19 +47,19 @@
             </a>
             <a class="nav-item" id="menu-fechamento">
                 <i class="fa-solid fa-lock"></i>
-                <span>Fechar Mês</span>
+                <span>Fechar MÃªs</span>
             </a>
         </div>
     </nav>
 
-    <!-- ÁREA PRINCIPAL DE CONTEÚDO -->
+    <!-- ÃREA PRINCIPAL DE CONTEÃšDO -->
     <main class="main-content">
         
-        <!-- CABEÇALHO COMPACTO -->
+        <!-- CABEÃ‡ALHO COMPACTO -->
         <header class="app-header">
             <div class="header-left">
-                <!-- Logo que só aparece no celular -->
-                <img src="logo.png" alt="AMTech" class="header-logo-mobile" onerror="this.style.display='none'">
+                <!-- Logo que sÃ³ aparece no celular -->
+                <img src="assets/images/logo.png" alt="AMTech" class="header-logo-mobile" onerror="this.style.display='none'">
                 <div class="header-text">
                     <span class="greeting" id="saudacao-usuario">A carregar...</span>
                     <span id="data-atual" class="date-text"></span>
@@ -75,15 +75,15 @@
             </div>
         </header>
 
-        <!-- TÍTULOS DINÂMICOS -->
+        <!-- TÃTULOS DINÃ‚MICOS -->
         <div class="page-title-area">
-            <h1 id="titulo-pagina">Novo Lançamento</h1>
-            <p id="subtitulo-pagina">Registre uma nova transação financeira</p>
+            <h1 id="titulo-pagina">Novo LanÃ§amento</h1>
+            <p id="subtitulo-pagina">Registre uma nova transaÃ§Ã£o financeira</p>
         </div>
 
         <div class="content">
             
-            <!-- ECRÃ 1: NOVO LANÇAMENTO -->
+            <!-- ECRÃƒ 1: NOVO LANÃ‡AMENTO -->
             <div id="ecra-novo-lancamento">
                 <form id="form-transacao" class="premium-form">
                     
@@ -93,7 +93,7 @@
                         <input type="number" id="valor" step="0.01" placeholder="0,00" required>
                     </div>
 
-                    <!-- Botões Segmentados para o Tipo -->
+                    <!-- BotÃµes Segmentados para o Tipo -->
                     <div class="type-segmented-control">
                         <input type="radio" id="tipo-receita" name="ui-tipo" value="receita">
                         <label for="tipo-receita" class="chip receita"><i class="fa-solid fa-arrow-trend-up"></i> Receita</label>
@@ -105,7 +105,7 @@
                         <label for="tipo-investimento" class="chip investimento"><i class="fa-solid fa-piggy-bank"></i> Investir</label>
                     </div>
                     
-                    <!-- Select Original Invisível -->
+                    <!-- Select Original InvisÃ­vel -->
                     <select id="tipo" required style="display: none;">
                         <option value="" disabled>Selecione...</option>
                         <option value="receita">Receita</option>
@@ -120,18 +120,18 @@
                         </div>
                         <div class="form-group input-icon">
                             <i class="fa-regular fa-pen-to-square"></i>
-                            <input type="text" id="descricao" placeholder="Descrição (ex: Supermercado)" required>
+                            <input type="text" id="descricao" placeholder="DescriÃ§Ã£o (ex: Supermercado)" required>
                         </div>
                     </div>
 
                     <div class="form-actions-stack">
-                        <button type="submit" class="btn-primary-large" id="btn-salvar-form">Guardar Lançamento</button>
+                        <button type="submit" class="btn-primary-large" id="btn-salvar-form">Guardar LanÃ§amento</button>
                         <button type="button" class="btn-ghost" id="btn-limpar">Limpar campos</button>
                     </div>
                 </form>
             </div>
 
-            <!-- ECRÃ 2: CONSULTA E EDIÇÃO -->
+            <!-- ECRÃƒ 2: CONSULTA E EDIÃ‡ÃƒO -->
             <div id="ecra-consulta" style="display: none;">
                 <div class="card transparent-card">
                     <div class="list-container">
@@ -140,7 +140,7 @@
                                 <tr>
                                     <th>Detalhes</th>
                                     <th>Valor</th>
-                                    <th>Ações</th>
+                                    <th>AÃ§Ãµes</th>
                                 </tr>
                             </thead>
                             <tbody id="corpo-tabela">
@@ -151,7 +151,7 @@
                 </div>
             </div>
 
-            <!-- ECRÃ 3: GRÁFICOS E RELATÓRIOS -->
+            <!-- ECRÃƒ 3: GRÃFICOS E RELATÃ“RIOS -->
             <div id="ecra-graficos" style="display: none;">
                 <!-- Card de Saldo Principal -->
                 <div class="balance-card">
@@ -184,7 +184,7 @@
                 </div>
 
                 <div class="card mt-20">
-                    <h3 class="card-title">Balanço do Mês</h3>
+                    <h3 class="card-title">BalanÃ§o do MÃªs</h3>
                     <div class="grafico-container">
                         <canvas id="meuGraficoCircular"></canvas>
                     </div>
@@ -195,15 +195,15 @@
                     <div class="ambot-avatar"><i class="fa-solid fa-robot"></i></div>
                     <div class="ambot-content">
                         <h3>AMBot Analista</h3>
-                        <p id="texto-dica-bot">A analisar os seus números...</p>
+                        <p id="texto-dica-bot">A analisar os seus nÃºmeros...</p>
                     </div>
                 </div>
             </div>
 
-            <!-- ECRÃ 4: FECHAMENTO MENSAL -->
+            <!-- ECRÃƒ 4: FECHAMENTO MENSAL -->
             <div id="ecra-fechamento" style="display: none;">
                 <div class="card">
-                    <p class="text-muted">Selecione o mês para fechar e guardar o histórico permanente.</p>
+                    <p class="text-muted">Selecione o mÃªs para fechar e guardar o histÃ³rico permanente.</p>
                     <div class="form-group input-icon mt-15">
                         <i class="fa-regular fa-calendar-check"></i>
                         <input type="month" id="mes-fechamento" required>
@@ -212,11 +212,11 @@
                 </div>
 
                 <div class="card mt-20 p-0">
-                    <h3 class="card-title p-20 pb-0">Histórico</h3>
+                    <h3 class="card-title p-20 pb-0">HistÃ³rico</h3>
                     <div class="list-container">
                         <table class="modern-table">
                             <tbody id="corpo-tabela-fechamentos">
-                                <tr><td colspan="4" class="empty-state">Nenhum histórico registado.</td></tr>
+                                <tr><td colspan="4" class="empty-state">Nenhum histÃ³rico registado.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -226,6 +226,6 @@
         </div>
     </main>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>
