@@ -2,230 +2,733 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AMTech Financeiro</title>
-    
-    <!-- NOVAS LINHAS PARA O ÍCONE DA SUA EMPRESA -->
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <!-- FIM DAS NOVAS LINHAS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Controle suas receitas, despesas e investimentos em um só lugar.">
+    <meta name="color-scheme" content="dark light">
+    <title>AMTech Financeiro | Controle financeiro</title>
 
-    <!-- Ícones e Fonte Inter -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Resto do seu código... -->
-    <!-- Ícones e Fonte Inter -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- CSS atualizado com v=5 para limpar o cache do celular -->
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="icon" href="assets/images/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="assets/images/icon-192.png">
+    <meta name="theme-color" content="#08090A">
+
+    <!-- Aplica o tema salvo antes da primeira pintura -->
+    <script>try { var t = localStorage.getItem('amtech-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); if (localStorage.getItem('amtech-nav') === 'recolhido') document.documentElement.classList.add('nav-recolhido'); } catch (e) {}</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+    <!-- Design system: tokens, componentes e estilos do app -->
+    <link rel="stylesheet" href="design-system/tokens.css?v=3">
+    <link rel="stylesheet" href="design-system/components.css?v=3">
+    <link rel="stylesheet" href="assets/css/style.css?v=17">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff">
 </head>
 <body>
 
-    <!-- NAVEGAÇÃO HÍBRIDA (Menu Lateral no PC / Barra Inferior no Mobile) -->
-    <nav class="app-nav">
+    <!-- Navegação: menu lateral, trilho de ícones ou barra inferior, conforme a largura -->
+    <nav class="app-nav" aria-label="Navegação principal">
+        <button type="button" class="nav-recolher" id="btn-recolher-menu" aria-expanded="true" aria-label="Recolher menu lateral" title="Recolher menu">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="assets/icons/sprite.svg#i-chevron-left"/></svg>
+        </button>
         <div class="nav-brand">
-            <img src="logo.png" alt="AMTech" onerror="this.style.display='none'">
+            <img src="assets/images/logo.png" alt="AMTech" onerror="this.style.display='none'">
         </div>
         <div class="nav-menu">
-            <a class="nav-item active" id="menu-novo">
-                <i class="fa-solid fa-plus"></i>
-                <span>Lançar</span>
-            </a>
-            <a class="nav-item" id="menu-consulta">
-                <i class="fa-solid fa-list-ul"></i>
-                <span>Consulta</span>
-            </a>
-            <a class="nav-item" id="menu-graficos">
-                <i class="fa-solid fa-chart-pie"></i>
-                <span>Resumo</span>
-            </a>
-            <a class="nav-item" id="menu-fechamento">
-                <i class="fa-solid fa-lock"></i>
-                <span>Fechar Mês</span>
-            </a>
+            <p class="nav-grupo label-sm">Principal</p>
+            <button type="button" class="nav-item" id="menu-graficos" title="Painel">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-layout-dashboard"/></svg>
+                <span class="nav-rotulo">Painel</span>
+            </button>
+            <button type="button" class="nav-item" id="menu-novo" title="Lançar">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-plus"/></svg>
+                <span class="nav-rotulo">Lançar</span>
+            </button>
+            <button type="button" class="nav-item" id="menu-consulta" title="Consulta">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-list"/></svg>
+                <span class="nav-rotulo">Consulta</span>
+                <span class="nav-badge" id="nav-badge-consulta" hidden>0</span>
+            </button>
+            <p class="nav-grupo label-sm">Gestão</p>
+            <button type="button" class="nav-item" id="menu-fechamento" title="Fechar mês">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-lock"/></svg>
+                <span class="nav-rotulo">Fechar mês</span>
+            </button>
+            <p class="nav-grupo label-sm">Minha área</p>
+            <button type="button" class="nav-item" id="menu-conta" title="Conta">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-user"/></svg>
+                <span class="nav-rotulo">Conta</span>
+            </button>
+            <button type="button" class="nav-item nav-item-ajuda" id="menu-ajuda" title="Ajuda">
+                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-circle-help"/></svg>
+                <span class="nav-rotulo">Ajuda</span>
+            </button>
         </div>
+        <button type="button" class="nav-user" id="nav-user" aria-label="Abrir minha conta" title="Minha conta">
+            <span class="avatar" data-avatar aria-hidden="true">?</span>
+            <span class="nav-user-text">
+                <span class="nav-user-nome" data-user-nome>Carregando…</span>
+                <span class="nav-user-email" data-user-email></span>
+            </span>
+        </button>
     </nav>
 
-    <!-- ÁREA PRINCIPAL DE CONTEÚDO -->
-    <main class="main-content">
-        
-        <!-- CABEÇALHO COMPACTO -->
+    <main class="main-content" id="conteudo-principal">
+
         <header class="app-header">
             <div class="header-left">
-                <!-- Logo que só aparece no celular -->
-                <img src="logo.png" alt="AMTech" class="header-logo-mobile" onerror="this.style.display='none'">
+                <img src="assets/images/logo.png" alt="AMTech" class="header-logo-mobile" onerror="this.style.display='none'">
                 <div class="header-text">
-                    <span class="greeting" id="saudacao-usuario">A carregar...</span>
+                    <span class="greeting" id="saudacao-usuario">Carregando…</span>
                     <span id="data-atual" class="date-text"></span>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="icon-btn" id="btn-theme" title="Mudar Tema">
-                    <i class="fa-solid fa-moon"></i>
+                <span class="sync-status" id="sync-status" role="status">
+                    <span class="pulse" aria-hidden="true"></span>
+                    <span id="sync-texto">Conectando…</span>
+                </span>
+                <button type="button" class="icon-btn" id="btn-theme" title="Alternar entre tema claro e escuro" aria-label="Alternar entre tema claro e escuro">
+                    <svg class="icon" aria-hidden="true"><use id="icone-tema" href="assets/icons/sprite.svg#i-moon"/></svg>
                 </button>
-                <button class="icon-btn exit-btn" id="btn-sair" title="Sair da conta">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                </button>
+
+                <div class="user-menu">
+                    <button type="button" class="user-btn" id="btn-user" aria-haspopup="true" aria-expanded="false" aria-controls="user-popover">
+                        <span class="avatar" data-avatar aria-hidden="true">?</span>
+                        <span class="user-btn-nome" data-user-nome>Conta</span>
+                        <svg class="icon icon-sm user-btn-seta" aria-hidden="true"><use href="assets/icons/sprite.svg#i-chevron-down"/></svg>
+                        <span class="sr-only">Menu do usuário</span>
+                    </button>
+                    <div class="user-popover" id="user-popover" hidden>
+                        <div class="user-popover-head">
+                            <span class="avatar avatar-lg" data-avatar aria-hidden="true">?</span>
+                            <div class="user-popover-id">
+                                <p class="user-popover-nome" data-user-nome>Usuário</p>
+                                <p class="user-popover-email" data-user-email></p>
+                            </div>
+                        </div>
+                        <button type="button" class="popover-item" id="menu-ir-conta">
+                            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-user"/></svg> Meus dados
+                        </button>
+                        <button type="button" class="popover-item" id="menu-ir-senha">
+                            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-key-round"/></svg> Alterar senha
+                        </button>
+                        <button type="button" class="popover-item" id="menu-ir-ajuda">
+                            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-circle-help"/></svg> Ajuda
+                        </button>
+                        <div class="popover-theme">
+                            <span class="label-sm">Tema</span>
+                            <div class="seg" role="group" aria-label="Tema da interface">
+                                <button type="button" class="seg-btn" data-tema-opcao="auto" aria-pressed="false" title="Automático" aria-label="Tema automático">
+                                    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-monitor"/></svg>
+                                </button>
+                                <button type="button" class="seg-btn" data-tema-opcao="light" aria-pressed="false" title="Claro" aria-label="Tema claro">
+                                    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-sun"/></svg>
+                                </button>
+                                <button type="button" class="seg-btn" data-tema-opcao="dark" aria-pressed="false" title="Escuro" aria-label="Tema escuro">
+                                    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-moon"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="popover-item popover-sair" id="btn-sair">
+                            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-log-out"/></svg> Sair da conta
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <!-- TÍTULOS DINÂMICOS -->
         <div class="page-title-area">
-            <h1 id="titulo-pagina">Novo Lançamento</h1>
-            <p id="subtitulo-pagina">Registre uma nova transação financeira</p>
+            <p class="eyebrow label-sm" id="eyebrow-pagina">Visão geral</p>
+            <h1 id="titulo-pagina">Painel</h1>
+            <p id="subtitulo-pagina">Seus números do período, em gráficos</p>
         </div>
 
         <div class="content">
-            
-            <!-- ECRÃ 1: NOVO LANÇAMENTO -->
-            <div id="ecra-novo-lancamento">
-                <form id="form-transacao" class="premium-form">
-                    
-                    <!-- Campo de Valor em Destaque -->
-                    <div class="amount-wrapper">
-                        <span class="currency-symbol">R$</span>
-                        <input type="number" id="valor" step="0.01" placeholder="0,00" required>
+
+            <!-- Tela 2: novo lançamento -->
+            <div id="ecra-novo-lancamento" class="tela" hidden>
+                <form id="form-transacao" class="premium-form" novalidate>
+
+                    <div class="field">
+                        <div class="field-label-row">
+                            <label class="label-md" for="valor">Valor</label>
+                            <span class="cf-badge cf-badge-brand" id="badge-edicao" hidden>Editando</span>
+                        </div>
+                        <div class="amount-wrapper">
+                            <span class="currency-symbol" aria-hidden="true">R$</span>
+                            <input type="number" id="valor" step="0.01" min="0" inputmode="decimal" placeholder="0,00" required aria-describedby="valor-erro">
+                        </div>
+                        <p class="field-error" id="valor-erro" role="alert" hidden></p>
                     </div>
 
-                    <!-- Botões Segmentados para o Tipo -->
-                    <div class="type-segmented-control">
-                        <input type="radio" id="tipo-receita" name="ui-tipo" value="receita">
-                        <label for="tipo-receita" class="chip receita"><i class="fa-solid fa-arrow-trend-up"></i> Receita</label>
+                    <fieldset class="type-fieldset">
+                        <legend class="label-md">Tipo</legend>
+                        <div class="type-segmented-control">
+                            <input type="radio" id="tipo-receita" name="ui-tipo" value="receita">
+                            <label for="tipo-receita" class="chip">
+                                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-trending-up"/></svg> Receita
+                            </label>
 
-                        <input type="radio" id="tipo-despesa" name="ui-tipo" value="despesa" checked>
-                        <label for="tipo-despesa" class="chip despesa"><i class="fa-solid fa-arrow-trend-down"></i> Despesa</label>
+                            <input type="radio" id="tipo-despesa" name="ui-tipo" value="despesa" checked>
+                            <label for="tipo-despesa" class="chip">
+                                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-trending-down"/></svg> Despesa
+                            </label>
 
-                        <input type="radio" id="tipo-investimento" name="ui-tipo" value="investimento">
-                        <label for="tipo-investimento" class="chip investimento"><i class="fa-solid fa-piggy-bank"></i> Investir</label>
-                    </div>
-                    
-                    <!-- Select Original Invisível -->
-                    <select id="tipo" required style="display: none;">
-                        <option value="" disabled>Selecione...</option>
+                            <input type="radio" id="tipo-investimento" name="ui-tipo" value="investimento">
+                            <label for="tipo-investimento" class="chip">
+                                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-piggy-bank"/></svg> Investimento
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- Select oculto, lido pelo app.js -->
+                    <select id="tipo" required hidden>
+                        <option value="" disabled>Selecione…</option>
                         <option value="receita">Receita</option>
                         <option value="despesa" selected>Despesa</option>
                         <option value="investimento">Investimento</option>
                     </select>
 
                     <div class="form-grid">
-                        <div class="form-group input-icon">
-                            <i class="fa-regular fa-calendar"></i>
-                            <input type="date" id="data" required>
+                        <div class="field">
+                            <label class="label-md" for="data">Data</label>
+                            <div class="input-icon">
+                                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-calendar"/></svg>
+                                <input type="date" id="data" required aria-describedby="data-erro">
+                            </div>
+                            <div class="quick-dates" role="group" aria-label="Atalhos de data">
+                                <button type="button" class="mini-chip" data-dias="0">Hoje</button>
+                                <button type="button" class="mini-chip" data-dias="1">Ontem</button>
+                                <button type="button" class="mini-chip" data-dias="2">Anteontem</button>
+                            </div>
+                            <p class="field-error" id="data-erro" role="alert" hidden></p>
                         </div>
-                        <div class="form-group input-icon">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                            <input type="text" id="descricao" placeholder="Descrição (ex: Supermercado)" required>
+                        <div class="field">
+                            <label class="label-md" for="descricao">Descrição</label>
+                            <div class="input-icon">
+                                <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-pencil"/></svg>
+                                <input type="text" id="descricao" placeholder="Ex.: Supermercado" autocomplete="off" maxlength="80" required aria-describedby="descricao-ajuda descricao-erro">
+                            </div>
+                            <p class="field-hint" id="descricao-ajuda">Um nome curto que você reconheça depois.</p>
+                            <p class="field-error" id="descricao-erro" role="alert" hidden></p>
                         </div>
                     </div>
 
                     <div class="form-actions-stack">
-                        <button type="submit" class="btn-primary-large" id="btn-salvar-form">Guardar Lançamento</button>
-                        <button type="button" class="btn-ghost" id="btn-limpar">Limpar campos</button>
+                        <button type="submit" class="cf-btn cf-btn-primary" id="btn-salvar-form">Salvar lançamento</button>
+                        <button type="button" class="cf-btn cf-btn-ghost" id="btn-limpar">Limpar campos</button>
                     </div>
                 </form>
             </div>
 
-            <!-- ECRÃ 2: CONSULTA E EDIÇÃO -->
-            <div id="ecra-consulta" style="display: none;">
-                <div class="card transparent-card">
-                    <div class="list-container">
-                        <table class="modern-table">
-                            <thead>
-                                <tr>
-                                    <th>Detalhes</th>
-                                    <th>Valor</th>
-                                    <th>Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="corpo-tabela">
-                                <tr><td colspan="3" class="empty-state">A carregar dados...</td></tr>
-                            </tbody>
-                        </table>
+            <!-- Tela 3: consulta e edição -->
+            <div id="ecra-consulta" class="tela" hidden>
+                <div class="toolbar">
+                    <div class="field toolbar-busca">
+                        <label class="sr-only" for="busca">Buscar lançamentos</label>
+                        <div class="input-icon">
+                            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-search"/></svg>
+                            <input type="search" id="busca" placeholder="Buscar por descrição" autocomplete="off">
+                        </div>
                     </div>
+                    <div class="filter-chips" role="group" aria-label="Filtrar por tipo">
+                        <button type="button" class="filter-chip" data-filtro="todos" aria-pressed="true">Todos</button>
+                        <button type="button" class="filter-chip" data-filtro="receita" aria-pressed="false"><span class="dot dot-receita" aria-hidden="true"></span>Receitas</button>
+                        <button type="button" class="filter-chip" data-filtro="despesa" aria-pressed="false"><span class="dot dot-despesa" aria-hidden="true"></span>Despesas</button>
+                        <button type="button" class="filter-chip" data-filtro="investimento" aria-pressed="false"><span class="dot dot-investimento" aria-hidden="true"></span>Investimentos</button>
+                    </div>
+                </div>
+                <p class="list-summary label-sm" id="resumo-lista" aria-live="polite"></p>
+                <section class="card list-card" aria-label="Lançamentos">
+                    <div id="lista-transacoes" class="txn-list">
+                        <p class="empty-state">Carregando dados…</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tela 1: painel (dashboard) -->
+            <div id="ecra-graficos" class="tela">
+
+                <div class="painel-toolbar">
+                    <div class="painel-periodo-info">
+                        <p class="label-sm">Período</p>
+                        <p class="painel-periodo-texto" id="painel-periodo-texto" aria-live="polite">—</p>
+                    </div>
+                    <div class="seg seg-periodo" role="group" aria-label="Período do painel">
+                        <button type="button" class="seg-btn" data-periodo="1" aria-pressed="false">Mês</button>
+                        <button type="button" class="seg-btn" data-periodo="3" aria-pressed="false">3 meses</button>
+                        <button type="button" class="seg-btn" data-periodo="6" aria-pressed="true">6 meses</button>
+                        <button type="button" class="seg-btn" data-periodo="12" aria-pressed="false">12 meses</button>
+                        <button type="button" class="seg-btn" data-periodo="tudo" aria-pressed="false">Tudo</button>
+                    </div>
+                </div>
+
+                <div class="painel-vazio" id="painel-vazio" hidden>
+                    <p><strong>Seu painel ainda está vazio.</strong> Faça um lançamento ou gere dados de exemplo para ver os gráficos funcionando.</p>
+                    <div class="painel-vazio-acoes">
+                        <button type="button" class="cf-btn cf-btn-secondary btn-compacto" id="btn-exemplo-painel">Gerar dados de exemplo</button>
+                        <button type="button" class="cf-btn cf-btn-ghost btn-compacto" id="btn-lancar-painel">Fazer um lançamento</button>
+                    </div>
+                </div>
+
+                <div class="cf-statcard balance-card">
+                    <p class="cf-statcard-label">Saldo disponível</p>
+                    <p id="resumo-saldo" class="cf-statcard-value balance-amount">R$ 0,00</p>
+                    <span class="balance-note">Receitas − despesas − investimentos, desde o primeiro lançamento</span>
+                </div>
+
+                <div class="painel-kpis">
+                    <div class="cf-statcard">
+                        <p class="cf-statcard-label"><span class="dot dot-receita" aria-hidden="true"></span>Receitas</p>
+                        <p id="resumo-receitas" class="cf-statcard-value stat-value">R$ 0,00</p>
+                        <span class="cf-statcard-trend" id="tendencia-receitas" hidden></span>
+                    </div>
+                    <div class="cf-statcard">
+                        <p class="cf-statcard-label"><span class="dot dot-despesa" aria-hidden="true"></span>Despesas</p>
+                        <p id="resumo-despesas" class="cf-statcard-value stat-value">R$ 0,00</p>
+                        <span class="cf-statcard-trend" id="tendencia-despesas" hidden></span>
+                    </div>
+                    <div class="cf-statcard">
+                        <p class="cf-statcard-label"><span class="dot dot-investimento" aria-hidden="true"></span>Investido</p>
+                        <p id="resumo-investimentos" class="cf-statcard-value stat-value">R$ 0,00</p>
+                        <span class="cf-statcard-trend" id="tendencia-investimentos" hidden></span>
+                    </div>
+                    <div class="cf-statcard">
+                        <p class="cf-statcard-label">Taxa de poupança</p>
+                        <p id="resumo-poupanca" class="cf-statcard-value stat-value">—</p>
+                        <span class="kpi-nota">(Receitas − despesas) ÷ receitas</span>
+                    </div>
+                </div>
+
+                <div class="painel-grid">
+                    <section class="card card-fluxo" aria-labelledby="titulo-fluxo">
+                        <h2 class="card-title label-lg" id="titulo-fluxo">Fluxo do período</h2>
+                        <div class="chart-box chart-box-lg">
+                            <canvas id="graficoFluxo" role="img" aria-label="Gráfico de fluxo do período"></canvas>
+                            <p class="empty-state chart-empty" hidden>Sem lançamentos neste período.</p>
+                        </div>
+                    </section>
+
+                    <section class="card card-destino" aria-labelledby="titulo-destino">
+                        <h2 class="card-title label-lg" id="titulo-destino">Destino da receita</h2>
+                        <div class="chart-box chart-box-sm">
+                            <canvas id="graficoDestino" role="img" aria-label="Gráfico do destino da receita"></canvas>
+                            <p class="empty-state chart-empty" hidden>Sem receitas neste período.</p>
+                        </div>
+                        <ul class="destino-legenda" id="destino-legenda"></ul>
+                    </section>
+
+                    <section class="card card-top" aria-labelledby="titulo-top">
+                        <h2 class="card-title label-lg" id="titulo-top">Maiores despesas</h2>
+                        <div class="chart-box chart-box-md">
+                            <canvas id="graficoTop" role="img" aria-label="Gráfico das maiores despesas"></canvas>
+                            <p class="empty-state chart-empty" hidden>Sem despesas neste período.</p>
+                        </div>
+                    </section>
+
+                    <section class="card card-recentes list-card" aria-labelledby="titulo-recentes">
+                        <div class="card-head-row">
+                            <h2 class="card-title label-lg" id="titulo-recentes">Últimos lançamentos</h2>
+                            <button type="button" class="cf-btn cf-btn-ghost btn-compacto" id="btn-ver-todos">Ver todos</button>
+                        </div>
+                        <div id="lista-recentes" class="txn-list">
+                            <p class="empty-state">Nenhum lançamento no momento.</p>
+                        </div>
+                    </section>
+
+                    <section class="card ambot-card card-ambot" aria-labelledby="titulo-ambot">
+                        <div class="ambot-avatar"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-sparkles"/></svg></div>
+                        <div class="ambot-content">
+                            <h2 class="card-title label-lg" id="titulo-ambot">AMBot analista</h2>
+                            <div id="texto-dica-bot">Analisando seus números…</div>
+                        </div>
+                    </section>
                 </div>
             </div>
 
-            <!-- ECRÃ 3: GRÁFICOS E RELATÓRIOS -->
-            <div id="ecra-graficos" style="display: none;">
-                <!-- Card de Saldo Principal -->
-                <div class="balance-card">
-                    <p class="balance-label">Saldo Livre Atual</p>
-                    <h2 id="resumo-saldo" class="balance-amount">R$ 0,00</h2>
-                </div>
-
-                <div class="painel-resumo">
-                    <div class="mini-card receita-bg">
-                        <i class="fa-solid fa-arrow-up"></i>
-                        <div>
-                            <p>Receitas</p>
-                            <h3 id="resumo-receitas">R$ 0,00</h3>
-                        </div>
-                    </div>
-                    <div class="mini-card despesa-bg">
-                        <i class="fa-solid fa-arrow-down"></i>
-                        <div>
-                            <p>Despesas</p>
-                            <h3 id="resumo-despesas">R$ 0,00</h3>
-                        </div>
-                    </div>
-                    <div class="mini-card investimento-bg full-span">
-                        <i class="fa-solid fa-star"></i>
-                        <div>
-                            <p>Total Investido</p>
-                            <h3 id="resumo-investimentos">R$ 0,00</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mt-20">
-                    <h3 class="card-title">Balanço do Mês</h3>
-                    <div class="grafico-container">
-                        <canvas id="meuGraficoCircular"></canvas>
-                    </div>
-                </div>
-
-                <!-- Bot AMTech com Dicas -->
-                <div class="ambot-card mt-20">
-                    <div class="ambot-avatar"><i class="fa-solid fa-robot"></i></div>
-                    <div class="ambot-content">
-                        <h3>AMBot Analista</h3>
-                        <p id="texto-dica-bot">A analisar os seus números...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ECRÃ 4: FECHAMENTO MENSAL -->
-            <div id="ecra-fechamento" style="display: none;">
-                <div class="card">
+            <!-- Tela 4: fechamento mensal -->
+            <div id="ecra-fechamento" class="tela" hidden>
+                <section class="card">
                     <p class="text-muted">Selecione o mês para fechar e guardar o histórico permanente.</p>
-                    <div class="form-group input-icon mt-15">
-                        <i class="fa-regular fa-calendar-check"></i>
-                        <input type="month" id="mes-fechamento" required>
+                    <div class="field mt-15">
+                        <label class="label-md" for="mes-fechamento">Mês de referência</label>
+                        <div class="input-icon">
+                            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-calendar-clock"/></svg>
+                            <input type="month" id="mes-fechamento" required aria-describedby="mes-fechamento-erro">
+                        </div>
+                        <p class="field-error" id="mes-fechamento-erro" role="alert" hidden></p>
                     </div>
-                    <button type="button" class="btn-primary-large mt-15" id="btn-fazer-fechamento">Gravar Fechamento</button>
-                </div>
+                    <div class="form-actions-stack mt-15">
+                        <button type="button" class="cf-btn cf-btn-primary" id="btn-fazer-fechamento">Gravar fechamento</button>
+                    </div>
+                </section>
 
-                <div class="card mt-20 p-0">
-                    <h3 class="card-title p-20 pb-0">Histórico</h3>
-                    <div class="list-container">
-                        <table class="modern-table">
-                            <tbody id="corpo-tabela-fechamentos">
-                                <tr><td colspan="4" class="empty-state">Nenhum histórico registado.</td></tr>
-                            </tbody>
-                        </table>
+                <section class="card list-card mt-20" aria-labelledby="titulo-historico">
+                    <h2 class="card-title label-lg" id="titulo-historico">Histórico</h2>
+                    <div id="lista-fechamentos" class="txn-list">
+                        <p class="empty-state">Nenhum histórico registrado.</p>
                     </div>
+                </section>
+            </div>
+
+            <!-- Tela 5: conta do usuário -->
+            <div id="ecra-conta" class="tela" hidden>
+                <div class="conta-grid">
+
+                    <section class="card" aria-labelledby="titulo-perfil">
+                        <div class="perfil-head">
+                            <div class="foto-wrap">
+                                <span class="avatar avatar-xl" data-avatar aria-hidden="true">?</span>
+                                <button type="button" class="foto-editar" id="btn-foto-camera" aria-label="Escolher foto de perfil" title="Escolher foto">
+                                    <svg class="icon icon-sm" aria-hidden="true"><use href="assets/icons/sprite.svg#i-camera"/></svg>
+                                </button>
+                            </div>
+                            <div class="perfil-id">
+                                <h2 class="card-title label-lg" id="titulo-perfil">Dados do usuário</h2>
+                                <p class="perfil-nome" data-user-nome>Usuário</p>
+                                <div class="foto-acoes">
+                                    <button type="button" class="cf-btn cf-btn-secondary btn-compacto" id="btn-escolher-foto">Alterar foto</button>
+                                    <button type="button" class="cf-btn cf-btn-ghost btn-compacto" id="btn-remover-foto" hidden>Remover</button>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="input-foto" accept="image/*" hidden>
+                        <p class="field-hint foto-dica" id="foto-dica">A foto é recortada em quadrado e reduzida para 160 px (cerca de 10 KB) antes de ser salva. O arquivo original não é enviado.</p>
+
+                        <form id="form-perfil" novalidate>
+                            <div class="field">
+                                <label class="label-md" for="nome-exibicao">Nome de exibição</label>
+                                <div class="input-icon">
+                                    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-user"/></svg>
+                                    <input type="text" id="nome-exibicao" autocomplete="name" maxlength="60" aria-describedby="nome-exibicao-ajuda nome-exibicao-erro">
+                                </div>
+                                <p class="field-hint" id="nome-exibicao-ajuda">Aparece na saudação e no menu do usuário.</p>
+                                <p class="field-error" id="nome-exibicao-erro" role="alert" hidden></p>
+                            </div>
+
+                            <div class="field">
+                                <label class="label-md" for="email-conta">E-mail de acesso</label>
+                                <div class="input-icon">
+                                    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-mail"/></svg>
+                                    <input type="email" id="email-conta" readonly aria-describedby="email-conta-ajuda">
+                                </div>
+                                <p class="field-hint" id="email-conta-ajuda">É o seu login e não pode ser alterado por aqui.</p>
+                            </div>
+
+                            <dl class="meta-list">
+                                <div><dt class="label-sm">Conta criada em</dt><dd id="conta-criada">—</dd></div>
+                                <div><dt class="label-sm">Último acesso</dt><dd id="conta-acesso">—</dd></div>
+                                <div><dt class="label-sm">Lançamentos</dt><dd id="conta-lancamentos">0</dd></div>
+                            </dl>
+
+                            <div class="form-actions-stack">
+                                <button type="submit" class="cf-btn cf-btn-primary" id="btn-salvar-perfil">Salvar dados</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section class="card" id="card-senha" aria-labelledby="titulo-senha">
+                        <h2 class="card-title label-lg" id="titulo-senha">Alterar senha</h2>
+                        <p class="text-muted card-intro">Por segurança, confirme a senha atual antes de definir uma nova.</p>
+
+                        <form id="form-senha" novalidate>
+                            <input type="email" autocomplete="username" id="usuario-oculto" class="sr-only" tabindex="-1" aria-hidden="true" readonly>
+
+                            <div class="field">
+                                <label class="label-md" for="senha-atual">Senha atual</label>
+                                <div class="input-icon has-action">
+                                    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-lock"/></svg>
+                                    <input type="password" id="senha-atual" autocomplete="current-password" aria-describedby="senha-atual-erro">
+                                    <button type="button" class="toggle-senha" data-alvo="senha-atual" aria-label="Mostrar senha atual" aria-pressed="false">
+                                        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-eye"/></svg>
+                                    </button>
+                                </div>
+                                <p class="field-error" id="senha-atual-erro" role="alert" hidden></p>
+                            </div>
+
+                            <div class="field">
+                                <label class="label-md" for="senha-nova">Nova senha</label>
+                                <div class="input-icon has-action">
+                                    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-key-round"/></svg>
+                                    <input type="password" id="senha-nova" autocomplete="new-password" aria-describedby="senha-forca senha-nova-erro">
+                                    <button type="button" class="toggle-senha" data-alvo="senha-nova" aria-label="Mostrar nova senha" aria-pressed="false">
+                                        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-eye"/></svg>
+                                    </button>
+                                </div>
+                                <div class="strength" id="senha-forca" data-nivel="0" aria-live="polite">
+                                    <div class="strength-bar" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+                                    <span class="strength-text label-sm" id="senha-forca-texto">Use 8 ou mais caracteres</span>
+                                </div>
+                                <p class="field-error" id="senha-nova-erro" role="alert" hidden></p>
+                            </div>
+
+                            <div class="field">
+                                <label class="label-md" for="senha-confirma">Confirmar nova senha</label>
+                                <div class="input-icon has-action">
+                                    <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-shield-check"/></svg>
+                                    <input type="password" id="senha-confirma" autocomplete="new-password" aria-describedby="senha-confirma-erro">
+                                    <button type="button" class="toggle-senha" data-alvo="senha-confirma" aria-label="Mostrar confirmação da senha" aria-pressed="false">
+                                        <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-eye"/></svg>
+                                    </button>
+                                </div>
+                                <p class="field-error" id="senha-confirma-erro" role="alert" hidden></p>
+                            </div>
+
+                            <div class="form-actions-stack">
+                                <button type="submit" class="cf-btn cf-btn-primary" id="btn-salvar-senha">Atualizar senha</button>
+                                <button type="button" class="cf-btn cf-btn-ghost" id="btn-esqueci-senha">Esqueci minha senha</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section class="card conta-wide" aria-labelledby="titulo-aparencia">
+                        <h2 class="card-title label-lg" id="titulo-aparencia">Aparência</h2>
+                        <p class="text-muted card-intro">Escolha o tema da interface. No modo automático, o app segue o seu dispositivo.</p>
+                        <div class="tema-grid" role="group" aria-label="Tema da interface">
+                            <button type="button" class="tema-card" data-tema-opcao="dark" aria-pressed="false">
+                                <span class="tema-preview tema-preview-dark" aria-hidden="true"><i></i><i></i><i></i></span>
+                                <span class="tema-nome"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-moon"/></svg> Escuro</span>
+                            </button>
+                            <button type="button" class="tema-card" data-tema-opcao="light" aria-pressed="false">
+                                <span class="tema-preview tema-preview-light" aria-hidden="true"><i></i><i></i><i></i></span>
+                                <span class="tema-nome"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-sun"/></svg> Claro</span>
+                            </button>
+                            <button type="button" class="tema-card" data-tema-opcao="auto" aria-pressed="false">
+                                <span class="tema-preview tema-preview-auto" aria-hidden="true"><i></i><i></i><i></i></span>
+                                <span class="tema-nome"><svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-monitor"/></svg> Automático</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="card conta-wide conta-sessao" aria-labelledby="titulo-sessao">
+                        <div>
+                            <h2 class="card-title label-lg" id="titulo-sessao">Sessão</h2>
+                            <p class="text-muted">Encerre o acesso neste dispositivo.</p>
+                        </div>
+                        <button type="button" class="cf-btn cf-btn-secondary" id="btn-sair-conta">
+                            <svg class="icon" aria-hidden="true"><use href="assets/icons/sprite.svg#i-log-out"/></svg> Sair da conta
+                        </button>
+                    </section>
+
+                    <section class="card conta-wide conta-sessao conta-exemplo" aria-labelledby="titulo-exemplo">
+                        <div>
+                            <h2 class="card-title label-lg" id="titulo-exemplo">Dados de exemplo</h2>
+                            <p class="text-muted">Cria cerca de 180 lançamentos fictícios dos últimos 12 meses (salário, aluguel, mercado, investimentos e outros) para você ver os gráficos funcionando. Eles aparecem com o selo “Exemplo” e podem ser removidos de uma vez, sem afetar os seus lançamentos reais.</p>
+                            <p class="field-hint" id="exemplo-status">Nenhum lançamento de exemplo na conta.</p>
+                        </div>
+                        <div class="exemplo-acoes">
+                            <button type="button" class="cf-btn cf-btn-secondary" id="btn-gerar-exemplo">Gerar dados de exemplo</button>
+                            <button type="button" class="cf-btn cf-btn-ghost" id="btn-remover-exemplo" hidden>Remover dados de exemplo</button>
+                        </div>
+                    </section>
                 </div>
+            </div>
+
+            <!-- Tela 6: ajuda -->
+            <div id="ecra-ajuda" class="tela" hidden>
+
+                <nav class="ajuda-indice" aria-label="Neste guia">
+                    <a href="#ajuda-comecar">Primeiros passos</a>
+                    <a href="#ajuda-menu">Menu e barra superior</a>
+                    <a href="#ajuda-painel">Painel</a>
+                    <a href="#ajuda-lancar">Lançar</a>
+                    <a href="#ajuda-consulta">Consulta</a>
+                    <a href="#ajuda-fechar">Fechar mês</a>
+                    <a href="#ajuda-conta">Minha conta</a>
+                    <a href="#ajuda-saldo">Como o saldo é calculado</a>
+                    <a href="#ajuda-faq">Perguntas frequentes</a>
+                </nav>
+
+                <section class="card ajuda-secao" id="ajuda-comecar" aria-labelledby="h-comecar">
+                    <h2 class="ajuda-titulo" id="h-comecar">Primeiros passos</h2>
+                    <p class="ajuda-intro">O AMTech Financeiro registra o que entra e o que sai da sua conta e mostra o resultado em gráficos. Tudo é salvo na sua conta e pode ser acessado de qualquer dispositivo.</p>
+                    <ol class="ajuda-passos">
+                        <li><span class="passo-num" aria-hidden="true">1</span><div><strong>Lance seus movimentos.</strong> Em <em>Lançar</em>, informe valor, tipo, data e descrição. Leva poucos segundos.</div></li>
+                        <li><span class="passo-num" aria-hidden="true">2</span><div><strong>Acompanhe no Painel.</strong> Saldo, gráficos e comparação com o período anterior se atualizam sozinhos.</div></li>
+                        <li><span class="passo-num" aria-hidden="true">3</span><div><strong>Feche o mês.</strong> Em <em>Fechar mês</em>, guarde o resultado do mês no histórico para consultar depois.</div></li>
+                    </ol>
+                    <h3 class="ajuda-subtitulo">Os três tipos de lançamento</h3>
+                    <div class="ajuda-tabela" role="table" aria-label="Tipos de lançamento">
+                        <div class="ajuda-linha ajuda-cabecalho" role="row"><span role="columnheader">Tipo</span><span role="columnheader">Use quando</span><span role="columnheader">Efeito no saldo</span></div>
+                        <div class="ajuda-linha" role="row"><span role="cell"><span class="dot dot-receita" aria-hidden="true"></span> <strong>Receita</strong></span><span role="cell">Dinheiro que entra: salário, venda, trabalho extra.</span><span role="cell" class="valor-mono">+ aumenta</span></div>
+                        <div class="ajuda-linha" role="row"><span role="cell"><span class="dot dot-despesa" aria-hidden="true"></span> <strong>Despesa</strong></span><span role="cell">Dinheiro que sai: aluguel, mercado, contas.</span><span role="cell" class="valor-mono">− diminui</span></div>
+                        <div class="ajuda-linha" role="row"><span role="cell"><span class="dot dot-investimento" aria-hidden="true"></span> <strong>Investimento</strong></span><span role="cell">Dinheiro separado para render: Tesouro, CDB, fundos.</span><span role="cell" class="valor-mono">− diminui o saldo livre</span></div>
+                    </div>
+                </section>
+
+                <section class="card ajuda-secao" id="ajuda-menu" aria-labelledby="h-menu">
+                    <h2 class="ajuda-titulo" id="h-menu">Menu lateral e barra superior</h2>
+                    <p class="ajuda-intro">Use o menu lateral para trocar de tela e a barra superior para ver o estado da conexão, mudar o tema e abrir o menu do usuário.</p>
+                    <figure class="ajuda-figura">
+                        <a class="ajuda-img" href="assets/help/menu-dark.webp" target="_blank" rel="noopener" title="Abrir a imagem em tamanho original">
+                            <img class="img-escuro" src="assets/help/menu-dark.webp" width="1280" height="700" loading="lazy" alt="Tela do sistema com o menu lateral, a barra superior e o menu do usuário aberto, com oito pontos numerados">
+                            <img class="img-claro" src="assets/help/menu-light.webp" width="1280" height="700" loading="lazy" alt="Tela do sistema com o menu lateral, a barra superior e o menu do usuário aberto, com oito pontos numerados">
+                        </a>
+                        <figcaption>Os números da imagem correspondem à lista abaixo. Clique na imagem para ampliar.</figcaption>
+                    </figure>
+                    <ol class="ajuda-legenda">
+                        <li><strong>Recolher menu.</strong> O botão redondo na borda do menu deixa só os ícones, para sobrar mais espaço nas telas. Clique de novo para expandir. A escolha fica salva neste dispositivo.</li>
+                        <li><strong>Telas principais.</strong> Painel (gráficos), Lançar (novo registro) e Consulta (lista completa).</li>
+                        <li><strong>Selo de quantidade.</strong> Mostra quantos lançamentos você já cadastrou.</li>
+                        <li><strong>Ajuda.</strong> Abre este guia.</li>
+                        <li><strong>Cartão do usuário.</strong> Foto, nome e e-mail. Um clique leva à tela Minha conta.</li>
+                        <li><strong>Sincronização.</strong> “Sincronizado” indica que os dados estão em dia. “Sem conexão” avisa que a internet caiu; os dados voltam a carregar quando ela retornar.</li>
+                        <li><strong>Tema.</strong> Alterna entre claro e escuro.</li>
+                        <li><strong>Menu do usuário.</strong> Meus dados, Alterar senha, Ajuda, escolha do tema (automático, claro ou escuro) e Sair da conta.</li>
+                    </ol>
+                    <p class="ajuda-nota"><strong>No celular</strong>, o menu vira uma barra na parte de baixo da tela. Ajuda e Sair ficam no menu do usuário, no círculo com a sua foto, no canto superior direito.</p>
+                </section>
+
+                <section class="card ajuda-secao" id="ajuda-painel" aria-labelledby="h-painel">
+                    <h2 class="ajuda-titulo" id="h-painel">Painel</h2>
+                    <p class="ajuda-intro">É a tela inicial. Resume o seu dinheiro em números e gráficos, para você ver de relance como o período está indo.</p>
+                    <figure class="ajuda-figura">
+                        <a class="ajuda-img" href="assets/help/painel1-dark.webp" target="_blank" rel="noopener" title="Abrir a imagem em tamanho original">
+                            <img class="img-escuro" src="assets/help/painel1-dark.webp" width="1024" height="846" loading="lazy" alt="Painel com seletor de período, saldo disponível, indicadores, gráfico de fluxo e gráfico de destino da receita, com seis pontos numerados">
+                            <img class="img-claro" src="assets/help/painel1-light.webp" width="1024" height="846" loading="lazy" alt="Painel com seletor de período, saldo disponível, indicadores, gráfico de fluxo e gráfico de destino da receita, com seis pontos numerados">
+                        </a>
+                        <figcaption>Parte superior do Painel, com os indicadores e os dois principais gráficos.</figcaption>
+                    </figure>
+                    <ol class="ajuda-legenda">
+                        <li><strong>Período.</strong> Escolha Mês, 3, 6 ou 12 meses, ou Tudo. A troca muda os indicadores e os gráficos, mas não o saldo disponível.</li>
+                        <li><strong>Saldo disponível.</strong> Tudo o que entrou, menos o que saiu e o que foi investido, desde o primeiro lançamento. Aparece em verde quando é positivo e em vermelho quando é negativo.</li>
+                        <li><strong>Receitas, despesas e investido.</strong> Totais do período. A linha de baixo compara com o período anterior do mesmo tamanho, sempre com + ou −.</li>
+                        <li><strong>Taxa de poupança.</strong> (Receitas − despesas) ÷ receitas. Mostra a parte da receita que sobrou depois das despesas.</li>
+                        <li><strong>Fluxo do período.</strong> Barras de receitas, despesas e investimentos por mês (ou por dia, no modo Mês). A linha é o saldo acumulado. Passe o mouse ou toque para ver os valores.</li>
+                        <li><strong>Destino da receita.</strong> Quanto da receita foi para despesas, para investimentos e quanto sobrou.</li>
+                    </ol>
+                    <figure class="ajuda-figura">
+                        <a class="ajuda-img" href="assets/help/painel2-dark.webp" target="_blank" rel="noopener" title="Abrir a imagem em tamanho original">
+                            <img class="img-escuro" src="assets/help/painel2-dark.webp" width="1024" height="494" loading="lazy" alt="Gráfico de maiores despesas e lista dos últimos lançamentos, com três pontos numerados">
+                            <img class="img-claro" src="assets/help/painel2-light.webp" width="1024" height="494" loading="lazy" alt="Gráfico de maiores despesas e lista dos últimos lançamentos, com três pontos numerados">
+                        </a>
+                        <figcaption>Parte inferior do Painel.</figcaption>
+                    </figure>
+                    <ol class="ajuda-legenda">
+                        <li><strong>Maiores despesas.</strong> As cinco descrições que mais pesaram no período. Lançamentos com a mesma descrição são somados.</li>
+                        <li><strong>Últimos lançamentos.</strong> Os cinco registros mais recentes, de qualquer período.</li>
+                        <li><strong>Ver todos.</strong> Abre a Consulta com a lista completa.</li>
+                    </ol>
+                    <p class="ajuda-nota">Mais abaixo, o <strong>AMBot analista</strong> comenta o seu saldo e sugere onde aplicar o que sobrou. É uma ferramenta de apoio, não uma recomendação financeira.</p>
+                </section>
+
+                <section class="card ajuda-secao" id="ajuda-lancar" aria-labelledby="h-lancar">
+                    <h2 class="ajuda-titulo" id="h-lancar">Lançar</h2>
+                    <p class="ajuda-intro">Aqui você registra uma receita, uma despesa ou um investimento. Todos os campos são obrigatórios.</p>
+                    <figure class="ajuda-figura">
+                        <a class="ajuda-img" href="assets/help/lancar-dark.webp" target="_blank" rel="noopener" title="Abrir a imagem em tamanho original">
+                            <img class="img-escuro" src="assets/help/lancar-dark.webp" width="904" height="518" loading="lazy" alt="Formulário de novo lançamento com os campos valor, tipo, data e descrição e os botões salvar e limpar, com sete pontos numerados">
+                            <img class="img-claro" src="assets/help/lancar-light.webp" width="904" height="518" loading="lazy" alt="Formulário de novo lançamento com os campos valor, tipo, data e descrição e os botões salvar e limpar, com sete pontos numerados">
+                        </a>
+                        <figcaption>Formulário de novo lançamento.</figcaption>
+                    </figure>
+                    <ol class="ajuda-legenda">
+                        <li><strong>Valor.</strong> Digite só o número, sem “R$”. Use vírgula ou ponto para os centavos (por exemplo, 125,90). Precisa ser maior que zero.</li>
+                        <li><strong>Tipo.</strong> Receita, Despesa ou Investimento. O tipo define se o valor soma ou subtrai do saldo e a cor do lançamento em todo o sistema.</li>
+                        <li><strong>Data.</strong> Já vem com o dia de hoje. Toque no campo para abrir o calendário e escolher outro dia.</li>
+                        <li><strong>Atalhos de data.</strong> Hoje, Ontem e Anteontem preenchem a data com um toque.</li>
+                        <li><strong>Descrição.</strong> Um nome curto que você reconheça depois, com até 80 caracteres (por exemplo, “Supermercado”). Descrições iguais são somadas no gráfico de maiores despesas.</li>
+                        <li><strong>Salvar lançamento.</strong> Grava o registro. Se faltar algum campo, a mensagem em vermelho indica qual corrigir.</li>
+                        <li><strong>Limpar campos.</strong> Volta o formulário ao estado inicial, inclusive se você estiver editando um lançamento.</li>
+                    </ol>
+                </section>
+
+                <section class="card ajuda-secao" id="ajuda-consulta" aria-labelledby="h-consulta">
+                    <h2 class="ajuda-titulo" id="h-consulta">Consulta</h2>
+                    <p class="ajuda-intro">Lista todos os lançamentos, do mais recente ao mais antigo. Daqui você também edita ou apaga um registro.</p>
+                    <figure class="ajuda-figura">
+                        <a class="ajuda-img" href="assets/help/consulta-dark.webp" target="_blank" rel="noopener" title="Abrir a imagem em tamanho original">
+                            <img class="img-escuro" src="assets/help/consulta-dark.webp" width="1024" height="480" loading="lazy" alt="Lista de lançamentos com campo de busca, filtros por tipo, contador e botões de editar e apagar, com seis pontos numerados">
+                            <img class="img-claro" src="assets/help/consulta-light.webp" width="1024" height="480" loading="lazy" alt="Lista de lançamentos com campo de busca, filtros por tipo, contador e botões de editar e apagar, com seis pontos numerados">
+                        </a>
+                        <figcaption>Tela de consulta de lançamentos.</figcaption>
+                    </figure>
+                    <ol class="ajuda-legenda">
+                        <li><strong>Busca.</strong> Filtra pela descrição enquanto você digita. Não diferencia maiúsculas, minúsculas nem acentos.</li>
+                        <li><strong>Filtros por tipo.</strong> Todos, Receitas, Despesas ou Investimentos. Dá para combinar com a busca.</li>
+                        <li><strong>Contador.</strong> Mostra quantos lançamentos aparecem, por exemplo “3 lançamentos de 12”.</li>
+                        <li><strong>Descrição, data e tipo.</strong> O ponto colorido repete a cor do tipo: verde para receita, laranja para despesa e azul para investimento.</li>
+                        <li><strong>Valor.</strong> Sempre com sinal: + para receita e − para despesa e investimento.</li>
+                        <li><strong>Editar e apagar.</strong> O lápis abre o formulário já preenchido, e o botão passa a dizer “Atualizar lançamento”. A lixeira pede confirmação antes de apagar, e não dá para desfazer.</li>
+                    </ol>
+                </section>
+
+                <section class="card ajuda-secao" id="ajuda-fechar" aria-labelledby="h-fechar">
+                    <h2 class="ajuda-titulo" id="h-fechar">Fechar mês</h2>
+                    <p class="ajuda-intro">Guarda o resultado de um mês no histórico, como uma foto do período. Ajuda a comparar meses depois.</p>
+                    <figure class="ajuda-figura">
+                        <a class="ajuda-img" href="assets/help/fechar-dark.webp" target="_blank" rel="noopener" title="Abrir a imagem em tamanho original">
+                            <img class="img-escuro" src="assets/help/fechar-dark.webp" width="1024" height="516" loading="lazy" alt="Tela de fechamento com o campo mês de referência, o botão gravar fechamento e o histórico, com três pontos numerados">
+                            <img class="img-claro" src="assets/help/fechar-light.webp" width="1024" height="516" loading="lazy" alt="Tela de fechamento com o campo mês de referência, o botão gravar fechamento e o histórico, com três pontos numerados">
+                        </a>
+                        <figcaption>Tela de fechamento mensal.</figcaption>
+                    </figure>
+                    <ol class="ajuda-legenda">
+                        <li><strong>Mês de referência.</strong> Escolha o mês que quer fechar.</li>
+                        <li><strong>Gravar fechamento.</strong> Soma os lançamentos daquele mês e salva receitas, despesas, investimentos e saldo final. Os lançamentos continuam editáveis, e um novo fechamento do mesmo mês cria outro registro.</li>
+                        <li><strong>Histórico.</strong> Cada linha mostra o mês, quanto entrou, quanto saiu e o saldo, com o selo Positivo, Negativo ou Zerado.</li>
+                    </ol>
+                </section>
+
+                <section class="card ajuda-secao" id="ajuda-conta" aria-labelledby="h-conta">
+                    <h2 class="ajuda-titulo" id="h-conta">Minha conta</h2>
+                    <p class="ajuda-intro">Seus dados, a foto de perfil, a troca de senha e o tema da interface.</p>
+                    <figure class="ajuda-figura">
+                        <a class="ajuda-img" href="assets/help/conta1-dark.webp" target="_blank" rel="noopener" title="Abrir a imagem em tamanho original">
+                            <img class="img-escuro" src="assets/help/conta1-dark.webp" width="1024" height="664" loading="lazy" alt="Tela Minha conta com foto de perfil, nome, e-mail, dados da conta e formulário de troca de senha, com nove pontos numerados">
+                            <img class="img-claro" src="assets/help/conta1-light.webp" width="1024" height="664" loading="lazy" alt="Tela Minha conta com foto de perfil, nome, e-mail, dados da conta e formulário de troca de senha, com nove pontos numerados">
+                        </a>
+                        <figcaption>Dados do usuário e troca de senha.</figcaption>
+                    </figure>
+                    <ol class="ajuda-legenda">
+                        <li><strong>Foto de perfil.</strong> Mostra suas iniciais até você escolher uma foto. Aparece no menu, na barra superior e nesta tela.</li>
+                        <li><strong>Alterar foto.</strong> Escolha uma imagem do aparelho (ou tire uma foto, no celular). Ela é recortada em quadrado, reduzida para 160 px e comprimida para cerca de 10 KB antes de ser salva. O arquivo original nunca é enviado.</li>
+                        <li><strong>Nome de exibição.</strong> Aparece na saudação e nos menus. Use pelo menos 2 letras.</li>
+                        <li><strong>E-mail de acesso.</strong> É o seu login. Aparece em cinza porque não pode ser alterado por aqui.</li>
+                        <li><strong>Dados da conta.</strong> Data de criação, último acesso e quantos lançamentos você tem.</li>
+                        <li><strong>Senha atual.</strong> Necessária por segurança para confirmar que é você.</li>
+                        <li><strong>Nova senha.</strong> Use 6 caracteres ou mais. A barra indica a força: misture letras maiúsculas e minúsculas, números e símbolos para chegar em “Forte”.</li>
+                        <li><strong>Confirmar nova senha.</strong> Repita a nova senha. O olho ao lado de cada campo mostra ou esconde o que você digitou.</li>
+                        <li><strong>Esqueci minha senha.</strong> Envia um link de redefinição para o seu e-mail.</li>
+                    </ol>
+                    <figure class="ajuda-figura">
+                        <a class="ajuda-img" href="assets/help/conta2-dark.webp" target="_blank" rel="noopener" title="Abrir a imagem em tamanho original">
+                            <img class="img-escuro" src="assets/help/conta2-dark.webp" width="1024" height="276" loading="lazy" alt="Cartões de aparência, com três opções de tema, e de sessão, com o botão sair da conta, com dois pontos numerados">
+                            <img class="img-claro" src="assets/help/conta2-light.webp" width="1024" height="276" loading="lazy" alt="Cartões de aparência, com três opções de tema, e de sessão, com o botão sair da conta, com dois pontos numerados">
+                        </a>
+                        <figcaption>Aparência e sessão.</figcaption>
+                    </figure>
+                    <ol class="ajuda-legenda">
+                        <li><strong>Tema.</strong> Escuro, Claro ou Automático. No automático, o sistema segue a configuração do seu aparelho.</li>
+                        <li><strong>Sair da conta.</strong> Encerra o acesso neste dispositivo.</li>
+                    </ol>
+                </section>
+
+                <section class="card ajuda-secao" id="ajuda-saldo" aria-labelledby="h-saldo">
+                    <h2 class="ajuda-titulo" id="h-saldo">Como o saldo é calculado</h2>
+                    <p class="ajuda-intro">O saldo disponível considera todos os lançamentos, de qualquer data.</p>
+                    <p class="ajuda-formula"><span class="valor-mono">Saldo = receitas − despesas − investimentos</span></p>
+                    <p class="ajuda-intro">Exemplo: você recebeu <span class="valor-mono">R$ 5.000,00</span> de salário, pagou <span class="valor-mono">R$ 1.500,00</span> de aluguel e investiu <span class="valor-mono">R$ 800,00</span> no Tesouro Selic. O saldo disponível é <span class="valor-mono">R$ 2.700,00</span>.</p>
+                    <p class="ajuda-nota">O dinheiro investido sai do saldo disponível porque já não está livre para gastar, mas continua sendo seu. Por isso o painel mostra os investimentos separados.</p>
+                </section>
+
+                <section class="card ajuda-secao" id="ajuda-faq" aria-labelledby="h-faq">
+                    <h2 class="ajuda-titulo" id="h-faq">Perguntas frequentes</h2>
+                    <details class="ajuda-faq"><summary>Errei um valor ou o tipo de um lançamento. O que faço?</summary><p>Abra a Consulta, toque no lápis do lançamento, corrija e use “Atualizar lançamento”. Se preferir, apague e lance de novo.</p></details>
+                    <details class="ajuda-faq"><summary>Por que o saldo não muda quando troco o período?</summary><p>O saldo disponível sempre considera todo o histórico. Só os indicadores e os gráficos mudam com o período.</p></details>
+                    <details class="ajuda-faq"><summary>O que o “Fechar mês” faz com os meus lançamentos?</summary><p>Nada. Ele só guarda um resumo do mês no histórico. Você pode continuar lançando e editando normalmente.</p></details>
+                    <details class="ajuda-faq"><summary>Minha foto ocupa espaço no servidor?</summary><p>Muito pouco. A imagem é recortada, reduzida para 160 × 160 pixels e comprimida para cerca de 10 KB, menos do que uma foto de miniatura comum. Só essa versão pequena é salva, junto com o seu perfil.</p></details>
+                    <details class="ajuda-faq"><summary>Esqueci a minha senha.</summary><p>Na tela de entrada, use “Esqueceu a senha?” e informe o e-mail. Se já estiver dentro do sistema, vá em Minha conta e use “Esqueci minha senha”. Você recebe um link para criar uma nova.</p></details>
+                    <details class="ajuda-faq"><summary>Os meus dados ficam visíveis para outras pessoas?</summary><p>Não. Cada lançamento é salvo com o identificador da sua conta, e o sistema só lista os seus. Para entrar é preciso e-mail e senha.</p></details>
+                    <details class="ajuda-faq"><summary>Dá para usar no celular?</summary><p>Sim. O menu vira uma barra na parte de baixo da tela e os formulários se ajustam ao tamanho do aparelho. Ajuda e Sair ficam no menu do usuário, no canto superior direito.</p></details>
+                    <details class="ajuda-faq"><summary>Como vejo os gráficos funcionando sem lançar nada?</summary><p>Em Minha conta, role até “Dados de exemplo” e use “Gerar dados de exemplo”. O sistema cria lançamentos fictícios dos últimos 12 meses, marcados com o selo “Exemplo”. Quando quiser, “Remover dados de exemplo” apaga só eles e preserva os seus lançamentos reais. No Painel vazio há um atalho para o mesmo botão.</p></details>
+                    <details class="ajuda-faq"><summary>Os gráficos não aparecem.</summary><p>Os gráficos precisam de internet para carregar. Verifique a conexão e recarregue a página. O indicador “Sincronizado” na barra superior mostra se os dados estão chegando.</p></details>
+                </section>
+
             </div>
 
         </div>
     </main>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>

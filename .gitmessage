@@ -1,0 +1,8 @@
+# <tipo>: <resumo curto, no imperativo, até ~70 caracteres>
+#
+# Tipos: feat (funcionalidade), fix (correção), docs, style (visual sem mudar regra),
+#        refactor, perf, test, chore (configuração, ferramentas, dependências)
+#
+# Corpo (opcional): o que mudou e por quê. Uma linha em branco antes dele.
+#
+# Rodapé (opcional): Co-Authored-By, issues relacionadas.

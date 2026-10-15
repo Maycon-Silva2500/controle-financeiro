@@ -1,0 +1,140 @@
+/* Gerado por design-system/tools/build_tokens.py a partir de tokens.json. Não edite à mão. */
+
+:root {
+  color-scheme: dark;
+  --surface-100: #08090A;
+  --surface-200: #121815;
+  --surface-300: #141A17;
+  --line: #202923;
+  --ink: #EDEFEC;
+  --ink-muted: #77806F;
+  --ink-faint: #4E554B;
+  --brand: #35F58E;
+  --on-brand: #08090A;
+  --brand-soft: #08110B;
+  --focus: var(--brand);
+  --success: #3FD37F;
+  --success-soft: #12211A;
+  --danger: #FF6B6B;
+  --danger-soft: #251818;
+  --warning: #FFC24D;
+  --warning-soft: #26210F;
+  --category-blue: #7FB0FF;
+  --category-blue-soft: #161C26;
+  --category-orange: #FF7A45;
+  --category-orange-soft: #261A15;
+  --category-neutral: #C9CFC6;
+  --category-neutral-soft: #1B1E1B;
+  --overlay: rgba(8,9,10,0.72);
+  --shadow-sm: none;
+  --shadow-md: none;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 34px;
+  --radius-pill: 999px;
+
+  --heading-lg: 700 24px/30px var(--font-sans);
+  --heading-lg-tracking: normal;
+  --heading-md: 600 22px/28px var(--font-sans);
+  --heading-md-tracking: normal;
+  --heading-sm: 600 20px/26px var(--font-sans);
+  --heading-sm-tracking: normal;
+  --body-md: 400 15px/22px var(--font-sans);
+  --body-md-tracking: normal;
+  --body-sm: 400 13px/18px var(--font-sans);
+  --body-sm-tracking: normal;
+  --label-lg: 600 13px/18px var(--font-sans);
+  --label-lg-tracking: .12em;
+  --label-md: 600 12px/16px var(--font-sans);
+  --label-md-tracking: .16em;
+  --label-sm: 500 11px/14px var(--font-sans);
+  --label-sm-tracking: .22em;
+  --amount-xl: 700 40px/44px var(--font-mono);
+  --amount-xl-tracking: -.01em;
+  --amount-lg: 700 24px/30px var(--font-mono);
+  --amount-lg-tracking: -.01em;
+  --amount-md: 600 16px/22px var(--font-mono);
+  --amount-md-tracking: normal;
+  --amount-sm: 500 13px/18px var(--font-mono);
+  --amount-sm-tracking: normal;
+}
+
+/* Tema claro pela preferência do sistema, exceto se o escuro foi forçado */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --surface-100: #F5F7F4;
+    --surface-200: #FFFFFF;
+    --surface-300: #EDF1EC;
+    --line: #DFE4DD;
+    --ink: #0D120F;
+    --ink-muted: #697065;
+    --ink-faint: #B9C0B4;
+    --brand: #0F6E4F;
+    --on-brand: #FFFFFF;
+    --brand-soft: #EAFBF2;
+    --focus: var(--brand);
+    --success: #0F6E4F;
+    --success-soft: #E5F7ED;
+    --danger: #B03030;
+    --danger-soft: #FDEAEA;
+    --warning: #8A5A00;
+    --warning-soft: #FEF5E0;
+    --category-blue: #1D5FBF;
+    --category-blue-soft: #E9F0FD;
+    --category-orange: #C44A1A;
+    --category-orange-soft: #FDEEE7;
+    --category-neutral: #5C6459;
+    --category-neutral-soft: #EEF0ED;
+    --overlay: rgba(13,18,15,0.40);
+    --shadow-sm: 0 1px 2px rgba(13,18,15,0.06);
+    --shadow-md: 0 8px 24px rgba(13,18,15,0.10);
+  }
+}
+
+/* Tema claro forçado */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --surface-100: #F5F7F4;
+  --surface-200: #FFFFFF;
+  --surface-300: #EDF1EC;
+  --line: #DFE4DD;
+  --ink: #0D120F;
+  --ink-muted: #697065;
+  --ink-faint: #B9C0B4;
+  --brand: #0F6E4F;
+  --on-brand: #FFFFFF;
+  --brand-soft: #EAFBF2;
+  --focus: var(--brand);
+  --success: #0F6E4F;
+  --success-soft: #E5F7ED;
+  --danger: #B03030;
+  --danger-soft: #FDEAEA;
+  --warning: #8A5A00;
+  --warning-soft: #FEF5E0;
+  --category-blue: #1D5FBF;
+  --category-blue-soft: #E9F0FD;
+  --category-orange: #C44A1A;
+  --category-orange-soft: #FDEEE7;
+  --category-neutral: #5C6459;
+  --category-neutral-soft: #EEF0ED;
+  --overlay: rgba(13,18,15,0.40);
+  --shadow-sm: 0 1px 2px rgba(13,18,15,0.06);
+  --shadow-md: 0 8px 24px rgba(13,18,15,0.10);
+}

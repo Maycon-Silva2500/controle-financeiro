@@ -1,0 +1,27 @@
+// Regras sugeridas: cada usuário acessa só os próprios dados.
+// Publicar este arquivo substitui as regras atuais; confira antes.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Lançamentos
+    match /transacoes/{id} {
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Fechamentos mensais
+    match /fechamentos/{id} {
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Perfil: um documento por usuário (id = uid), com a foto reduzida; o limite de tamanho evita imagens grandes
+    match /perfis/{uid} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.foto is string
+        && request.resource.data.foto.size() < 40000;
+    }
+  }
+}
